@@ -6,11 +6,11 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
-import LoginPage from "./app/login/LoginPage.js";
+import RegisterPage from "./pages/Register/Register.tsx";
 
 const router = createBrowserRouter([
-  { path: "/", element: <LoginPage /> },
-  { index: true, element: <LoginPage /> },
+  { path: "/", element: <RegisterPage /> },
+  { index: true, element: <RegisterPage /> },
   { path: "*", element: <Navigate to={"/"} replace /> },
 ]);
 
