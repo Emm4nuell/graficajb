@@ -12,8 +12,8 @@ import OverviewPage from "./pages/Overview/Overview.tsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <RegisterPage /> },
-  { path: "/login", element: <SignInPage /> },
-  { path: "/overview", element: <OverviewPage /> }
+  { path: "signin", element: <SignInPage /> },
+  { path: "overview", element: <OverviewPage /> },
 ]);
 
 createRoot(document.getElementById("root")).render(
