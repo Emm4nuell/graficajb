@@ -11,12 +11,9 @@ import SignInPage from "./pages/SignIn/SignIn.tsx";
 import OverviewPage from "./pages/Overview/Overview.tsx";
 
 const router = createBrowserRouter([
-  { path: "/", element: <OverviewPage /> },
-  { path: "/register", element: <RegisterPage /> },
-  { path: "/overview", element: <OverviewPage /> },
+  { path: "/", element: <RegisterPage /> },
   { path: "/login", element: <SignInPage /> },
-  { index: true, element: <RegisterPage /> },
-  { path: "*", element: <Navigate to={"/"} replace /> },
+  { path: "/overview", element: <OverviewPage /> }
 ]);
 
 createRoot(document.getElementById("root")).render(
