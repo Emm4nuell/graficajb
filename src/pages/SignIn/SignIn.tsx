@@ -1,11 +1,10 @@
-import React from "react";
 import ButtomBlue from "../../components/ButtomBlue/ButtomBlue";
 import CustomInputText from "../../components/CustomInputText/CustomInputText";
 import "./SignIn.css";
 export default function SignInPage() {
   return (
-    <>
-      <section>
+    <body id="body-signin">
+      <section id="section-signin">
         <div id="info-signin">
           <h1>Entrar</h1>
           <p>
@@ -39,6 +38,6 @@ export default function SignInPage() {
           <ButtomBlue text_button="Criar Conta"></ButtomBlue>
         </div>
       </section>
-    </>
+    </body>
   );
 }
