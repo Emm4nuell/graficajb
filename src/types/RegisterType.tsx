@@ -1,16 +1,21 @@
 import { z } from "zod";
 
-export type SignInType = {
+export type RegisterType = {
+  nome: string;
+  sobrenome: string;
   email: string;
   senha: string;
 };
 
-export const defaultSignIn: SignInType = {
+export const defaultRegister: RegisterType = {
+  nome: "",
+  sobrenome: "",
   email: "",
   senha: "",
 };
 
-export const validationSignIn = z.object({
+export const validationRegister = z.object({
+  nome: z.string().nonempty("O nome é obrigatório"),
   email: z
     .string()
     .nonempty("O email é obrigatório")
@@ -21,4 +26,4 @@ export const validationSignIn = z.object({
     .min(6, "A senha deve conter mais de 6 caracteres"),
 });
 
-export type SignInZod = z.infer<typeof validationSignIn>;
+export type RegisterZod = z.infer<typeof validationRegister>;

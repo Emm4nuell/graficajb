@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 export default function SignInPage() {
   const [signIn, setSignIn] = useState<SignInType>(defaultSignIn);
   const handlerChange = (field: keyof SignInType, value: string) => {
-    setSignIn((event) => ({ ...event, [field]: value }));
+    setSignIn((prev) => ({ ...prev, [field]: value }));
     console.log(signIn);
   };
   return (
