@@ -1,0 +1,20 @@
+.buttom-filter {
+  display: flex;
+}
+
+.buttom-filter > button {
+  width: 200px;
+  height: 2.5rem;
+  border-radius: 4.78125rem;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.625rem;
+  cursor: pointer;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  margin-top: 15px;
+}

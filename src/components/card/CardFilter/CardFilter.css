@@ -1,0 +1,27 @@
+.card-filter {
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 1px 2px 4px 0px rgba(44, 44, 44, 0.28);
+  padding: 25px;
+  width: 626px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.card-filter .card-title {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-filter-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.card-filter > h1 {
+  font-weight: 400;
+}
