@@ -24,6 +24,7 @@ section#section-register {
 
 #info-register span {
   font-size: 1.5rem;
+  color: #fff;
   font-style: normal;
   font-weight: 700;
   line-height: 1.875rem;
@@ -31,6 +32,7 @@ section#section-register {
 }
 
 #info-register h1 {
+  color: #fff;
   font-size: 3.5rem;
   font-style: normal;
   font-weight: 700;
@@ -43,6 +45,8 @@ section#section-register {
   font-style: normal;
   font-weight: 500;
   line-height: 1.875rem;
+  color: #fff;
+
 }
 
 #info-register p a {

@@ -4,12 +4,24 @@ import CustomInputText from "../../components/CustomInputText/CustomInputText";
 import ButtomBlue from "../../components/ButtomBlue/ButtomBlue";
 import { Link } from "react-router-dom";
 import { defaultRegister, RegisterType } from "../../types/RegisterType";
+import CustomInputSelect from "../../components/CustomInputSelect/CustomInputSelect";
+import { createUser } from "../../services/registerService";
 export default function RegisterPage() {
   const [register, setRegister] = useState<RegisterType>(defaultRegister);
+  const [perfil, setPerfil] = useState("");
   const handlerChange = (field: keyof RegisterType, value: string) => {
     setRegister((prev) => ({ ...prev, [field]: value }));
     console.log(register);
   };
+  const handleCreateAccount = async () => {
+    try {
+      const res = await createUser(register);
+      console.log("Usuário criado:", res);
+    } catch (error) {
+      console.error("Erro na criação:", error);
+    }
+  };
+
   return (
     <div id="body-register">
       <section id="section-register">
@@ -22,6 +34,7 @@ export default function RegisterPage() {
         </div>
 
         <form
+          onSubmit={(e) => e.preventDefault()}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -65,7 +78,20 @@ export default function RegisterPage() {
               placeholder={"Insira sua senha"}
             ></CustomInputText>
           </div>
-          <ButtomBlue text_button="Criar Conta"></ButtomBlue>
+          <div style={{ display: "flex", flexDirection: "row" }}>
+            <CustomInputSelect
+              id="perfil"
+              label="Perfil"
+              value={perfil}
+              selectLabel="Selecione qual o seu perfil"
+              onChange={(e) => [setPerfil(e.target.value), handlerChange("perfil", e.target.value)]}
+              options={[
+                { value: "CANDIDATO", label: "Candidato" },
+                { value: "RECRUTADOR", label: "Recrutador" }
+              ]}
+            ></CustomInputSelect>
+          </div>
+          <ButtomBlue text_button="Criar Conta" onClick={handleCreateAccount}></ButtomBlue>
         </form>
       </section>
     </div>
