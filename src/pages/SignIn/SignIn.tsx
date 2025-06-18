@@ -4,12 +4,21 @@ import CustomInputText from "../../components/CustomInputText/CustomInputText";
 import "./SignIn.css";
 import { defaultSignIn, SignInType } from "../../types/SignInType";
 import { Link } from "react-router-dom";
+import { signInService } from "../../services/signInService";
 export default function SignInPage() {
   const [signIn, setSignIn] = useState<SignInType>(defaultSignIn);
   const handlerChange = (field: keyof SignInType, value: string) => {
     setSignIn((prev) => ({ ...prev, [field]: value }));
     console.log(signIn);
   };
+    const handleSignIn = async () => {
+      try {
+        const res = await signInService(signIn);
+        console.log("Usuário logado:", res);
+      } catch (error) {
+        console.error("Erro no login:", error);
+      }
+    };
   return (
     <div id="body-signin">
       <section id="section-signin">
@@ -19,7 +28,7 @@ export default function SignInPage() {
             Ainda não possui uma conta? <Link to={"../"}>Cadastre-se</Link>
           </p>
           <form
-            action=""
+            onSubmit={(e) => e.preventDefault()}
             style={{
               display: "flex",
               flexDirection: "column",
@@ -46,7 +55,7 @@ export default function SignInPage() {
               ></CustomInputText>
             </div>
             <a href="#">Esqueceu a senha?</a>
-            <ButtomBlue text_button="Criar Conta"></ButtomBlue>
+            <ButtomBlue text_button="Criar Conta" onClick={handleSignIn}></ButtomBlue>
           </form>
         </div>
       </section>
