@@ -5,6 +5,7 @@ export type RegisterType = {
   sobrenome: string;
   email: string;
   senha: string;
+  perfil: string;
 };
 
 export const defaultRegister: RegisterType = {
@@ -12,6 +13,7 @@ export const defaultRegister: RegisterType = {
   sobrenome: "",
   email: "",
   senha: "",
+  perfil: ""
 };
 
 export const validationRegister = z.object({
