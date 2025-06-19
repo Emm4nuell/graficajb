@@ -8,12 +8,9 @@ export const signInService = async (data: SignInType) => {
     body: JSON.stringify(data),
   });
 
-  const result = await response.json();
-
   if (!response.ok) {
-    throw new Error(result.message || "Erro na API");
+    const error = await response.json();
+    throw new Error(error.message || "Erro na API");
   }
-
-  console.log("Resposta da API:", result);
-  return result;
+  return response.json();
 };
