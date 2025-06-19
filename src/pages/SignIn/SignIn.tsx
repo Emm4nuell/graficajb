@@ -1,24 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ButtomBlue from "../../components/ButtomBlue/ButtomBlue";
 import CustomInputText from "../../components/CustomInputText/CustomInputText";
 import "./SignIn.css";
 import { defaultSignIn, SignInType } from "../../types/SignInType";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { signInService } from "../../services/signInService";
+import { useAuth } from "../../contexts/AuthContext";
+import { toast } from 'react-toastify';
+
 export default function SignInPage() {
   const [signIn, setSignIn] = useState<SignInType>(defaultSignIn);
   const handlerChange = (field: keyof SignInType, value: string) => {
     setSignIn((prev) => ({ ...prev, [field]: value }));
     console.log(signIn);
   };
-    const handleSignIn = async () => {
-      try {
-        const res = await signInService(signIn);
-        console.log("Usuário logado:", res);
-      } catch (error) {
-        console.error("Erro no login:", error);
-      }
-    };
+  const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
+
+  const handleSignIn = async () => {
+    try {
+      const res = await signInService(signIn);
+      login(res.token);
+      toast.success('Login realizado com sucesso!');
+      navigate("/overview");
+    } catch (error) {
+      toast.error('Usuário ou senha inválidos');
+      console.error("Erro no login:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/overview");
+    }
+  }, [isAuthenticated, navigate]);
+
   return (
     <div id="body-signin">
       <section id="section-signin">
@@ -55,7 +71,10 @@ export default function SignInPage() {
               ></CustomInputText>
             </div>
             <a href="#">Esqueceu a senha?</a>
-            <ButtomBlue text_button="Criar Conta" onClick={handleSignIn}></ButtomBlue>
+            <ButtomBlue
+              text_button="Entrar"
+              onClick={handleSignIn}
+            ></ButtomBlue>
           </form>
         </div>
       </section>
