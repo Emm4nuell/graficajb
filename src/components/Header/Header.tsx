@@ -51,34 +51,34 @@ export default function Header() {
             <span className="sidebar-name">João Pessoa da Silva</span>
             <span className="sidebar-email">joaopessoadasilva@gmail.com</span>
             <div className="sidebar-options">
-              <a href="#">
+              <Link to={"/perfil"}>
                 <img src="/src/assets/icons/perfil.svg" alt="" />
                 Perfil
-              </a>
-              <a href="#">
+              </Link>
+              <Link to={"/myresume"}>
                 <img src="/src/assets/icons/curriculo.svg" alt="" />
                 Meu Currículo
-              </a>
-              <a href="#">
+              </Link>
+              <Link to={"/perfil"}>
                 <img src="/src/assets/icons/bag.svg" alt="" />
                 Minhas Candidaturas
-              </a>
-              <a href="#">
+              </Link>
+              <Link to={"/perfil"}>
                 <img
                   src="/src/assets/icons/rec.svg"
                   alt=""
                   style={{ width: "1.55rem", height: "1.3rem" }}
                 />
                 Minhas Vagas
-              </a>
-              <a href="#">
+              </Link>
+              <Link to={"/perfil"}>
                 <img src="/src/assets/icons/setting.svg" alt="" />
                 Configurações
-              </a>
-              <a href="#" onClick={handleLogout}>
+              </Link>
+              <Link to={"/overview"} onClick={handleLogout}>
                 <img src="/src/assets/icons/exit.svg" alt="" />
                 Sair
-              </a>
+              </Link>
             </div>
           </div>
         )}
