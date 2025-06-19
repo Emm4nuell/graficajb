@@ -1,0 +1,30 @@
+.custom-panel {
+    border-radius: 10px;
+}
+
+.custom-panel .p-panel-header {
+    background: white;
+    border: none;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 0.625rem;
+    background: #FFF;
+    box-shadow: 0px 0px 1px 0px rgba(44, 44, 44, 0.28);
+    
+}
+
+.custom-panel .p-panel-title {
+    color: #616161;
+    font-size: 1.3rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 3.4375rem;
+    letter-spacing: -0.03rem;
+}
+
+.custom-panel .p-panel-content {
+    background-color: white;
+    padding: 1rem;
+}
