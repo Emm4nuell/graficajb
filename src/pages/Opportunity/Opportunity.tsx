@@ -6,6 +6,7 @@ import CardFilter from "../../components/card/CardFilter/CardFilter";
 import CustomButtom from "../../components/CustomButtom/CustomButtom";
 import { FaFilter } from "react-icons/fa6";
 import { OpportunitieType } from "../../types/OpportunitiesType";
+import Header from "../../components/Header/Header";
 
 const listOpportunities = [
   {
@@ -57,107 +58,110 @@ export default function OpportunityPage() {
   };
 
   return (
-    <div className="opportunity-body">
-      <div className="opportunities">
-        <div id="title">
-          <h1>Oportunidades</h1>
-          <span>{opportunities.length} vaga(s) encontrada(s)</span>
-        </div>
-        <div className="div-opportunities">
-          <div className="list-opportunities">
-            {opportunities.map((value, index) => (
-              <CardOpportunity
-                key={index}
-                title={value.title}
-                subtitle={value.subtitle}
-                topic={value.topic}
-                date={value.date}
-              />
-            ))}
+    <>
+      <Header />
+      <div className="opportunity-body">
+        <div className="opportunities">
+          <div id="title">
+            <h1>Oportunidades</h1>
+            <span>{opportunities.length} vaga(s) encontrada(s)</span>
           </div>
-          <div className="filter">
-            <h1 id="title">Filtros rápidos</h1>
-            <h2>Modelo de trabalho</h2>
-            <div className="checkbox">
-              <input type="checkbox" />
-              <span>Presencial</span>
+          <div className="div-opportunities">
+            <div className="list-opportunities">
+              {opportunities.map((value, index) => (
+                <CardOpportunity
+                  key={index}
+                  title={value.title}
+                  subtitle={value.subtitle}
+                  topic={value.topic}
+                  date={value.date}
+                />
+              ))}
             </div>
-            <div className="checkbox">
-              <input type="checkbox" />
-              <span>Híbrido</span>
-            </div>
-            <div className="checkbox">
-              <input type="checkbox" />
-              <span>Remoto</span>
-            </div>
-            <h2>Local de trabalho</h2>
-            <div className="select">
-              <CustomSelect
-                id="1"
-                label="Estado"
-                value={"estado"}
-                selectLabel="Selecione o estado"
-                onChange={(e) => {}}
-                options={[
-                  { value: "pb", label: "Paraíba" },
-                  { value: "pe", label: "Pernambuco" },
-                  { value: "rn", label: "Rio Grande do Norte" },
-                ]}
+            <div className="filter">
+              <h1 id="title">Filtros rápidos</h1>
+              <h2>Modelo de trabalho</h2>
+              <div className="checkbox">
+                <input type="checkbox" />
+                <span>Presencial</span>
+              </div>
+              <div className="checkbox">
+                <input type="checkbox" />
+                <span>Híbrido</span>
+              </div>
+              <div className="checkbox">
+                <input type="checkbox" />
+                <span>Remoto</span>
+              </div>
+              <h2>Local de trabalho</h2>
+              <div className="select">
+                <CustomSelect
+                  id="1"
+                  label="Estado"
+                  value={"estado"}
+                  selectLabel="Selecione o estado"
+                  onChange={(e) => {}}
+                  options={[
+                    { value: "pb", label: "Paraíba" },
+                    { value: "pe", label: "Pernambuco" },
+                    { value: "rn", label: "Rio Grande do Norte" },
+                  ]}
+                />
+                <CustomSelect
+                  id="2"
+                  label="Cidade"
+                  value={"Cidade"}
+                  selectLabel="Selecione a cidade"
+                  onChange={(e) => {}}
+                  options={[
+                    { value: "pb", label: "Paraíba" },
+                    { value: "pe", label: "Pernambuco" },
+                    { value: "rn", label: "Rio Grande do Norte" },
+                  ]}
+                />
+              </div>
+              <h2>Dados da vaga</h2>
+              <div className="select">
+                <CustomSelect
+                  id="1"
+                  label="Estado"
+                  value={"estado"}
+                  selectLabel="Tipo da vaga"
+                  onChange={(e) => {}}
+                  options={[
+                    { value: "pb", label: "Paraíba" },
+                    { value: "pe", label: "Pernambuco" },
+                    { value: "rn", label: "Rio Grande do Norte" },
+                  ]}
+                />
+                <CustomSelect
+                  id="1"
+                  label="Estado"
+                  value={"estado"}
+                  selectLabel="Elegível para PCD?"
+                  onChange={(e) => {}}
+                  options={[
+                    { value: "sim", label: "Sim" },
+                    { value: "nao", label: "Não" },
+                  ]}
+                />
+              </div>
+              <CustomButtom
+                text="Outros Filtros"
+                icon={<FaFilter />}
+                color="#2c2c2c"
+                onClick={() => visible()}
               />
-              <CustomSelect
-                id="2"
-                label="Cidade"
-                value={"Cidade"}
-                selectLabel="Selecione a cidade"
-                onChange={(e) => {}}
-                options={[
-                  { value: "pb", label: "Paraíba" },
-                  { value: "pe", label: "Pernambuco" },
-                  { value: "rn", label: "Rio Grande do Norte" },
-                ]}
-              />
             </div>
-            <h2>Dados da vaga</h2>
-            <div className="select">
-              <CustomSelect
-                id="1"
-                label="Estado"
-                value={"estado"}
-                selectLabel="Tipo da vaga"
-                onChange={(e) => {}}
-                options={[
-                  { value: "pb", label: "Paraíba" },
-                  { value: "pe", label: "Pernambuco" },
-                  { value: "rn", label: "Rio Grande do Norte" },
-                ]}
-              />
-              <CustomSelect
-                id="1"
-                label="Estado"
-                value={"estado"}
-                selectLabel="Elegível para PCD?"
-                onChange={(e) => {}}
-                options={[
-                  { value: "sim", label: "Sim" },
-                  { value: "nao", label: "Não" },
-                ]}
-              />
-            </div>
-            <CustomButtom
-              text="Outros Filtros"
-              icon={<FaFilter />}
-              color="#2c2c2c"
-              onClick={() => visible()}
-            />
           </div>
-        </div>
 
-        {cardFilter && (
-          <div className="card-absolute">
-            <CardFilter visible={visible} />
-          </div>
-        )}
+          {cardFilter && (
+            <div className="card-absolute">
+              <CardFilter visible={visible} />
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
