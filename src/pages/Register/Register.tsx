@@ -1,25 +1,34 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./Register.css";
 import CustomInputText from "../../components/CustomInputText/CustomInputText";
 import ButtomBlue from "../../components/ButtomBlue/ButtomBlue";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { defaultRegister, RegisterType } from "../../types/RegisterType";
 import CustomInputSelect from "../../components/CustomInputSelect/CustomInputSelect";
 import { createUser } from "../../services/registerService";
+import { toast } from "react-toastify";
 export default function RegisterPage() {
   const [register, setRegister] = useState<RegisterType>(defaultRegister);
   const [perfil, setPerfil] = useState("");
+  const navigate = useNavigate();
   const handlerChange = (field: keyof RegisterType, value: string) => {
     setRegister((prev) => ({ ...prev, [field]: value }));
-    console.log(register);
   };
+
   const handleCreateAccount = async () => {
+if(register.senha == register.repitaSenha){
     try {
       const res = await createUser(register);
-      console.log("Usuário criado:", res);
-    } catch (error) {
-      console.error("Erro na criação:", error);
-    }
+      navigate("/signin")
+      toast.success("Usuário cadastrado com sucesso")
+    } catch (error: any) {
+  const firstFieldError = error?.fieldErrors?.[0]?.message;
+  const fallbackMessage = error?.message || "Erro ao criar conta";
+
+  toast.error(firstFieldError || fallbackMessage);
+}
+}else{toast.error("As senhas não são iguais.")}
+
   };
 
   return (
@@ -53,11 +62,11 @@ export default function RegisterPage() {
               placeholder={"Insira seu nome"}
             ></CustomInputText>
             <CustomInputText
-              type_input={"text"}
-              label={"Sobrenome"}
-              value={register.sobrenome}
-              onChange={(e) => handlerChange("sobrenome", e.target.value)}
-              placeholder={"Insira seu sobrenome"}
+              type_input={"tel"}
+              label={"Telefone"}
+              value={register.telefone}
+              onChange={(e) => handlerChange("telefone", e.target.value)}
+              placeholder={"Insira seu telefone"}
             ></CustomInputText>
           </div>
           <div style={{ display: "flex", flexDirection: "row" }}>
@@ -69,13 +78,20 @@ export default function RegisterPage() {
               placeholder={"Insira seu email"}
             ></CustomInputText>
           </div>
-          <div style={{ display: "flex", flexDirection: "row" }}>
+          <div style={{ display: "flex", flexDirection: "row", gap: "0.94rem" }}>
             <CustomInputText
               type_input={"password"}
               label={"Senha"}
               value={register.senha}
               onChange={(e) => handlerChange("senha", e.target.value)}
               placeholder={"Insira sua senha"}
+            ></CustomInputText>
+             <CustomInputText
+              type_input={"password"}
+              label={"Senha"}
+              value={register.repitaSenha}
+              onChange={(e) => handlerChange("repitaSenha", e.target.value)}
+              placeholder={"Confirme sua senha"}
             ></CustomInputText>
           </div>
           <div style={{ display: "flex", flexDirection: "row" }}>
