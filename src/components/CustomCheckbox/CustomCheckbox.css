@@ -1,0 +1,16 @@
+.custom-checkbox-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.custom-checkbox-label {
+  font-weight: 500;
+  color: #1e293b;
+  font-size: 0.9rem;
+}
+
+.custom-checkbox-error-message {
+  color: #ef4444;
+  font-size: 0.75rem;
+}
