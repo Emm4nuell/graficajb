@@ -1,0 +1,46 @@
+/* Container */
+.custom-calendar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+/* Label */
+.custom-calendar-label {
+  color: #616161;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.625rem;
+}
+
+/* Estilo base do input de data */
+.custom-calendar .p-inputtext {
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  font-size: 0.75rem;
+
+}
+
+/* Hover e focus */
+.custom-calendar .p-inputtext:hover {
+  border-color: #3b82f6;
+}
+
+.custom-calendar .p-inputtext:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* Estado de erro */
+.custom-calendar-error .p-inputtext {
+  border-color: #ef4444;
+}
+
+.custom-calendar-error-message {
+  color: #ef4444;
+  font-size: 0.75rem;
+}
