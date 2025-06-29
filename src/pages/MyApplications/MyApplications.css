@@ -1,8 +1,8 @@
-div.info-my-resume {
+div.info-my-applications {
     padding: 2rem 5.56rem 0rem;
 }
 
-div.my-resume div.info-my-resume h1 {
+div.my-applications div.info-my-applications h1 {
     color: #2C2C2C;
     font-size: 2rem;
     font-weight: 700;
@@ -10,7 +10,7 @@ div.my-resume div.info-my-resume h1 {
     margin: 0;
 }
 
-div.my-resume div.info-my-resume p {
+div.my-applications div.info-my-applications p {
     color: var(--Greyscale-700, #616161);
     font-size: 1rem;
     font-weight: 400;
@@ -18,7 +18,7 @@ div.my-resume div.info-my-resume p {
     margin-top: -.7rem;
 }
 
-div.my-resume div.main-my-resume {
+div.my-applications div.main-my-applications {
     display: flex;
     flex-direction: column;
     gap: 1rem;

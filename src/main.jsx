@@ -18,6 +18,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'primereact/resources/themes/lara-light-indigo/theme.css'; 
 import 'primereact/resources/primereact.min.css';
 import 'primeicons/primeicons.css';
+import MyApplications from "./pages/MyApplications/MyApplications.tsx";
+import MyVacancies from "./pages/MyVacancies/MyVacancies.tsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <RegisterPage /> },
@@ -29,6 +31,8 @@ const router = createBrowserRouter([
     element: <PrivateRoute />, // <- tudo abaixo aqui é privado
     children: [
         { path: "myresume", element: <MyResumePage /> },
+        { path: "myapplications", element: <MyApplications /> },
+        { path: "myvacancies", element: <MyVacancies /> },
     ],
   },
 ]);

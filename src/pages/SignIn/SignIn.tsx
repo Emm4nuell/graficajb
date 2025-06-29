@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ButtomBlue from "../../components/ButtomBlue/ButtomBlue";
 import CustomInputText from "../../components/CustomInputText/CustomInputText";
 import "./SignIn.css";
@@ -12,7 +12,6 @@ export default function SignInPage() {
   const [signIn, setSignIn] = useState<SignInType>(defaultSignIn);
   const handlerChange = (field: keyof SignInType, value: string) => {
     setSignIn((prev) => ({ ...prev, [field]: value }));
-    console.log(signIn);
   };
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();

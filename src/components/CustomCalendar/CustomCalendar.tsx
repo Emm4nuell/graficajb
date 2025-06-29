@@ -10,6 +10,7 @@ export default function CustomCalendar({
   label,
   error,
   id,
+  disabled,
   ...rest
 }: CustomCalendarProps) {
   return (
@@ -22,6 +23,7 @@ export default function CustomCalendar({
       <Calendar
         id={id}
         className={`custom-calendar ${error ? 'custom-calendar-error' : ''}`}
+        disabled={disabled}
         {...rest}
       />
       {error && <span className="custom-calendar-error-message">{error}</span>}

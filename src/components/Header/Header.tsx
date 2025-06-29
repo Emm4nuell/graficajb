@@ -59,11 +59,11 @@ export default function Header() {
                 <img src="/src/assets/icons/curriculo.svg" alt="" />
                 Meu Currículo
               </Link>
-              <Link to={"/perfil"}>
+              <Link to={"/myapplications"}>
                 <img src="/src/assets/icons/bag.svg" alt="" />
                 Minhas Candidaturas
               </Link>
-              <Link to={"/perfil"}>
+              <Link to={"/myvacancies"}>
                 <img
                   src="/src/assets/icons/rec.svg"
                   alt=""
