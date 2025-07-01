@@ -84,7 +84,7 @@ export default function CoursesForm({courses, setCourses}: CourseFormProps) {
 
             <CustomCalendar
               id={`fim-${index}`}
-              label="Data Fim"
+              label="Data de Conclusão"
               value={exp.endDate}
               onChange={(e) => handleChange(index, "endDate", e.value ?? null)}
               placeholder="Selecione uma data"

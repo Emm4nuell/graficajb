@@ -24,6 +24,8 @@ export default function CompetenciesForm({competencies, setCompetencies}: Compet
   { label: string; value: string }[]
   >([]);
 
+  console.log(competencies)
+
   const { token } = useAuth()
 
   useEffect(() => {

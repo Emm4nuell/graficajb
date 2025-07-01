@@ -4,12 +4,14 @@ import './CustomInputTextPrime.css';
 interface CustomInputTextPrimeProps extends InputTextProps {
   label?: string;
   error?: string;
+  type?: string;
 }
 
 export default function CustomInputTextPrime({
   label,
   error,
   id,
+  type,
   ...rest
 }: CustomInputTextPrimeProps) {
   return (
@@ -19,7 +21,7 @@ export default function CustomInputTextPrime({
           {label}
         </label>
       )}
-      <InputText id={id} className={`custom-input ${error ? 'custom-input-error' : ''}`} {...rest} />
+      <InputText id={id} type={type} className={`custom-input ${error ? 'custom-input-error' : ''}`} {...rest} />
       {error && <span className="custom-input-error-message">{error}</span>}
     </div>
   );

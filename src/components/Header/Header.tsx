@@ -51,7 +51,7 @@ export default function Header() {
             <span className="sidebar-name">João Pessoa da Silva</span>
             <span className="sidebar-email">joaopessoadasilva@gmail.com</span>
             <div className="sidebar-options">
-              <Link to={"/perfil"}>
+              <Link to={"/profile"}>
                 <img src="/src/assets/icons/perfil.svg" alt="" />
                 Perfil
               </Link>

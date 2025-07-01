@@ -42,7 +42,7 @@ const CustomTextArea: React.FC<CustomTextAreaProps> = ({
         cols={rest.cols || 30}
         className={`custom-textarea ${error ? "custom-textarea-error" : ""}`}
         style={{
-          fontSize: ".9rem",
+          fontSize: ".8rem",
           width: "100%",
           padding: "0.75rem",
           borderRadius: "0.5rem",
