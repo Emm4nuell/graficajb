@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 type TokenPayload = {
   nome: string;
   perfil: string;
+  id: string;
+  email: string;
   exp: number;
 };
 
@@ -51,6 +53,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         JSON.stringify({
         nome: decoded.nome,
         perfil: decoded.perfil,
+        id: decoded.id,
+        email: decoded.email,
         exp: decoded.exp,
         })
   );

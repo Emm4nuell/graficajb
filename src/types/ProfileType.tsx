@@ -1,86 +1,78 @@
 import { z } from "zod";
 
-export const validationProfile = z.object({
-  idUsuario: z.string().uuid("ID do usuário inválido"),
-  dataNascimento: z
-    .string()
-    .nonempty("A data de nascimento é obrigatória.")
-    .refine((date) => !isNaN(Date.parse(date)), {
-      message: "Data de nascimento inválida.",
+export type ProfilePayloadType = {
+  idUsuario: string;
+  userPessoal: {
+    nome: string;
+    email: string;
+    telefone: string | null;
+    dataNascimento: Date | null;
+  };
+  perfilPessoal: {
+    classificacaoAfirmativa: boolean | null;
+    corRaca: number;
+    pronome: number;
+    identidadeGenero: number;
+    orientacaoSexual: number;
+    sobreMim: string;
+    enderecoBairro: string | null;
+    enderecoCEP: string;
+    enderecoCidade: string | null;
+    enderecoEstado: string | null;
+    enderecoNumero: string | null;
+    enderecoRua: string | null;
+  };
+};
+
+export const defaultProfilePayload: ProfilePayloadType = {
+  idUsuario: "",
+  userPessoal: {
+    nome: "",
+    email: "",
+    telefone: null,
+    dataNascimento: null,
+  },
+  perfilPessoal: {
+    classificacaoAfirmativa: null,
+    corRaca: 0,
+    pronome: 0,
+    identidadeGenero: 0,
+    orientacaoSexual: 0,
+    sobreMim: "",
+    enderecoBairro: null,
+    enderecoCEP: "",
+    enderecoCidade: null,
+    enderecoEstado: null,
+    enderecoNumero: null,
+    enderecoRua: null,
+  },
+};
+
+export const validationProfilePayload = z.object({
+  idUsuario: z.string().uuid("ID inválido"),
+  userPessoal: z.object({
+    nome: z.string().nonempty("O nome é obrigatório."),
+    email: z.string().nonempty("O email é obrigatório.").email("O email é inválido."),
+    telefone: z.string().min(8, "O telefone é obrigatório."),
+    dataNascimento: z.date({
+      required_error: "A data de nascimento é obrigatória.",
+      invalid_type_error: "Data de nascimento inválida.",
     }),
+  }),
   perfilPessoal: z.object({
     classificacaoAfirmativa: z.boolean(),
     corRaca: z.number(),
     pronome: z.number(),
     identidadeGenero: z.number(),
     orientacaoSexual: z.number(),
-    sobreMim: z.string().nullable(),
-    enderecoBairro: z.string().nullable(),
-    enderecoCEP: z.string().nullable(),
-    enderecoCidade: z.string().nullable(),
-    enderecoEstado: z.string().nullable(),
-    enderecoNumero: z.string().nullable(),
-    enderecoRua: z.string().nullable(),
-  }),
-  profissional: z.object({
-    curriculo: z.string().nullable(),
-    experienciasProfissional: z.array(
-      z.object({
-        empresa: z.string(),
-        posicao: z.string(),
-        dataInicio: z
-          .string()
-          .refine((date) => !isNaN(Date.parse(date)), {
-            message: "Data início inválida.",
-          }),
-        dataFim: z
-          .string()
-          .nullable()
-          .optional()
-          .refine(
-            (date) => date === null || !isNaN(Date.parse(date as string)),
-            {
-              message: "Data fim inválida.",
-            }
-          ),
-        empregoAtual: z.boolean(),
-      })
-    ),
-    areasInteresse: z.array(z.string().uuid()),
-    formacaoAcademicas: z.array(
-      z.object({
-        grau: z.string(),
-        areaAtuacao: z.string(),
-        dataConclusao: z
-          .string()
-          .refine((date) => !isNaN(Date.parse(date)), {
-            message: "Data conclusão inválida.",
-          }),
-        concluido: z.boolean(),
-        certificado: z.string(),
-      })
-    ),
-    cursos: z.array(
-      z.object({
-        nomeCurso: z.string(),
-        dataConclusao: z
-          .string()
-          .refine((date) => !isNaN(Date.parse(date)), {
-            message: "Data conclusão inválida.",
-          }),
-        concluido: z.boolean(),
-        certificado: z.string(),
-        vagaId: z.string().uuid(),
-      })
-    ),
-    competenciasCandidato: z.array(
-      z.object({
-        competenciaId: z.string().uuid(),
-        nivel: z.number().min(0).max(5),
-        competenciaId1: z.string().nullable(),
-      })
-    ),
+    sobreMim: z.string().nonempty("O campo 'Sobre mim' é obrigatório."),
+    enderecoBairro: z.string().nonempty("O bairro é obrigatório."),
+    enderecoCEP: z.string().min(8, "O CEP é obrigatório."),
+    enderecoCidade: z.string().nonempty("A cidade é obrigatória."),
+    enderecoEstado: z.string().nonempty("O estado é obrigatório."),
+    enderecoNumero: z.string().nonempty("O número é obrigatório."),
+    enderecoRua: z.string().nonempty("A rua é obrigatória."),
   }),
 });
 
-export type ProfilePayload = z.infer<typeof validationProfile>;
+export type ProfilePayloadZod = z.infer<typeof validationProfilePayload>;

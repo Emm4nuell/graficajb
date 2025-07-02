@@ -3,11 +3,12 @@ import "./Header.css";
 import { Link, NavLink, useNavigate  } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import ButtomCard from "../ButtomCard/ButtomCard";
+import { toCapitalize } from "../../utils/toCapitalize";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen(!isOpen);
-  const { logout, isAuthenticated } = useAuth()
+  const { user, logout, isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -48,8 +49,8 @@ export default function Header() {
 
         {isOpen && (
           <div className="sidebar">
-            <span className="sidebar-name">João Pessoa da Silva</span>
-            <span className="sidebar-email">joaopessoadasilva@gmail.com</span>
+            <span className="sidebar-name">{toCapitalize(user?.nome)}</span>
+            <span className="sidebar-email">{user?.email}</span>
             <div className="sidebar-options">
               <Link to={"/profile"}>
                 <img src="/src/assets/icons/perfil.svg" alt="" />

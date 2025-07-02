@@ -55,6 +55,7 @@ if(register.senha == register.repitaSenha){
             style={{ display: "flex", flexDirection: "row", gap: "0.94rem" }}
           >
             <CustomInputText
+              id="nome"
               type_input={"text"}
               label={"Nome"}
               value={register.nome}
@@ -62,6 +63,7 @@ if(register.senha == register.repitaSenha){
               placeholder={"Insira seu nome"}
             ></CustomInputText>
             <CustomInputText
+              id="tel"
               type_input={"tel"}
               label={"Telefone"}
               value={register.telefone}
@@ -71,6 +73,7 @@ if(register.senha == register.repitaSenha){
           </div>
           <div style={{ display: "flex", flexDirection: "row" }}>
             <CustomInputText
+              id="email"
               type_input={"email"}
               label={"Email"}
               value={register.email}
@@ -80,6 +83,7 @@ if(register.senha == register.repitaSenha){
           </div>
           <div style={{ display: "flex", flexDirection: "row", gap: "0.94rem" }}>
             <CustomInputText
+              id="password"
               type_input={"password"}
               label={"Senha"}
               value={register.senha}
@@ -87,8 +91,9 @@ if(register.senha == register.repitaSenha){
               placeholder={"Insira sua senha"}
             ></CustomInputText>
              <CustomInputText
+              id="confirm-password"
               type_input={"password"}
-              label={"Senha"}
+              label={"Confirmar Senha"}
               value={register.repitaSenha}
               onChange={(e) => handlerChange("repitaSenha", e.target.value)}
               placeholder={"Confirme sua senha"}

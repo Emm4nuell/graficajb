@@ -15,6 +15,11 @@
   line-height: 1.625rem;
 }
 
+.custom-calendar-label > .required {
+  color: red;
+  margin-left: 0.1rem
+}
+
 /* Estilo base do input de data */
 .custom-calendar .p-inputtext {
   border: 1px solid #cbd5e1;

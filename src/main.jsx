@@ -21,6 +21,52 @@ import "primeicons/primeicons.css";
 import MyApplications from "./pages/MyApplications/MyApplications.tsx";
 import MyVacancies from "./pages/MyVacancies/MyVacancies.tsx";
 import Profile from "./pages/Profile/Profile.tsx";
+import { addLocale } from "primereact/api";
+
+addLocale("pt-BR", {
+  firstDayOfWeek: 0,
+  dayNames: [
+    "domingo",
+    "segunda-feira",
+    "terça-feira",
+    "quarta-feira",
+    "quinta-feira",
+    "sexta-feira",
+    "sábado"
+  ],
+  dayNamesShort: ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"],
+  dayNamesMin: ["D", "S", "T", "Q", "Q", "S", "S"],
+  monthNames: [
+    "janeiro",
+    "fevereiro",
+    "março",
+    "abril",
+    "maio",
+    "junho",
+    "julho",
+    "agosto",
+    "setembro",
+    "outubro",
+    "novembro",
+    "dezembro"
+  ],
+  monthNamesShort: [
+    "jan",
+    "fev",
+    "mar",
+    "abr",
+    "mai",
+    "jun",
+    "jul",
+    "ago",
+    "set",
+    "out",
+    "nov",
+    "dez"
+  ],
+  today: "Hoje",
+  clear: "Limpar"
+});
 
 const router = createBrowserRouter([
   { path: "/", element: <RegisterPage /> },
