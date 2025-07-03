@@ -112,10 +112,10 @@ export default function MyResumePage() {
       sobreMim: textValueAboutMe,
       enderecoBairro: endereco.bairro,
       enderecoCEP: cep,
-      enderecoCidade: endereco.localidade,
-      enderecoEstado: endereco.uf,
+      enderecoCidade: endereco.cidade,
+      enderecoEstado: endereco.estado,
       enderecoNumero: numero,
-      enderecoRua: endereco.logradouro,
+      enderecoRua: endereco.rua,
     },
     profissional: {
       curriculo: textValueCurriculum,

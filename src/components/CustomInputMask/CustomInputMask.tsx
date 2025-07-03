@@ -30,7 +30,6 @@ export default function CustomInputMask({
 }: CustomInputMaskProps) {
   const [touched, setTouched] = useState(false);
   const isInvalid = required && (touched && !value);
-  console.log(error)
   return (
     <div className="custom-input-mask-container">
       {label && (

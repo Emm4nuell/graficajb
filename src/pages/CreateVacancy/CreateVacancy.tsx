@@ -1,4 +1,4 @@
-import "./Profile.css";
+import "./CreateVacancy.css";
 import Header from "../../components/Header/Header";
 import CustomPanel from "../../components/CustomPanel/CustomPanel";
 import CustomInputTextPrime from "../../components/CustomInputTextPrime/CustomInputTextPrime";
@@ -20,11 +20,12 @@ import { savePerfilService } from "../../services/saveProfileService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
-import { getProfile } from "../../services/getProfile";
+import CustomInputNumber from "../../components/CustomInputNumber/CustomInputNumber";
 
-export default function Profile() {
-  const { user, token, login } = useAuth();
+export default function CreateVacancy() {
+  const { user, token } = useAuth();
   const navigate = useNavigate();
+  const [salario, setSalario] = useState(null)
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
   >({});
@@ -49,6 +50,8 @@ export default function Profile() {
       ...prev,
       userPessoal: {
         ...prev.userPessoal,
+        nome: user?.nome || "",
+        email: user?.email || "",
         [field]: value,
       },
     }));
@@ -97,14 +100,18 @@ export default function Profile() {
     setValidationErrors({});
 
     try {
+      // Valida
       validationProfilePayload.parse(profilePayload);
 
+      // Se chegou aqui, payload é válido, pode enviar
       const res = await savePerfilService(profilePayload, token);
-      login(token, profilePayload.userPessoal.nome, profilePayload.userPessoal.email)
+
       toast.success("Dados salvos com sucesso!");
       navigate("/overview");
     } catch (error) {
+      // Se for erro de validação Zod
       if (error instanceof z.ZodError) {
+        // Mapeia erros em objeto { caminho: mensagem }
         const fieldErrors: Record<string, string> = {};
         error.errors.forEach((err) => {
           const path = err.path.join(".");
@@ -115,65 +122,35 @@ export default function Profile() {
 
         toast.error("Verifique os campos obrigatórios.");
         console.error("Erros de validação:", error);
-        return;
+        return; // ⚠️ Não continua o envio
       }
 
+      // Outros erros de API
       toast.error("Ocorreu um erro ao salvar.");
       console.error("Erro no envio:", error);
     }
   };
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (user && token) {
-        setProfilePayload((prev) => ({
-          ...prev,
-          userPessoal: {
-            ...prev.userPessoal,
-            nome:
-              prev.userPessoal.nome && prev.userPessoal.nome.trim() !== ""
-                ? prev.userPessoal.nome
-                : toCapitalize(user.nome) || "",
-            email:
-              prev.userPessoal.email && prev.userPessoal.email.trim() !== ""
-                ? prev.userPessoal.email
-                : user.email || "",
-          },
-        }));
-
-        const result = await getProfile(token, user.id);
-        if (result) {
-          setProfilePayload((prev) => ({
-            ...prev,
-            perfilPessoal: {
-              classificacaoAfirmativa: result.classificacaoAfirmativa,
-              corRaca: result.corRaca,
-              pronome: result.pronome,
-              identidadeGenero: result.identidadeGenero,
-              orientacaoSexual: result.orientacaoSexual,
-              sobreMim: result.sobreMim,
-              enderecoBairro: result.enderecoBairro,
-              enderecoCEP: result.enderecoCEP,
-              enderecoCidade: result.enderecoCidade,
-              enderecoEstado: result.enderecoEstado,
-              enderecoNumero: result.enderecoNumero,
-              enderecoRua: result.enderecoRua,
-            },
-          }));
-        }
-      }
-    };
-
-    fetchProfile();
-  }, []);
+    if (user) {
+      setProfilePayload((prev) => ({
+        ...prev,
+        userPessoal: {
+          ...prev.userPessoal,
+          nome: toCapitalize(user.nome) || "",
+          email: user.email || "",
+        },
+      }));
+    }
+  }, [user]);
 
   return (
     <>
       <Header />
       <div className="my-resume">
         <div className="info-my-resume">
-          <h1>Perfil</h1>
-          <p>Aqui estão os seus dados pessoais</p>
+          <h1>Criar Vaga</h1>
+          <p>Insira as informações necessárias para a criação da vaga</p>
         </div>
 
         <div className="main-my-resume">
@@ -188,8 +165,8 @@ export default function Profile() {
                 style={{ display: "flex", flexDirection: "row", gap: "1.6rem" }}
               >
                 <CustomInputTextPrime
-                  id="nome"
-                  label="Nome Completo"
+                  id="titulo"
+                  label="Título"
                   value={
                     profilePayload.userPessoal.nome != null
                       ? profilePayload.userPessoal.nome
@@ -198,46 +175,15 @@ export default function Profile() {
                   onChange={(e) =>
                     handleUserPessoalChange("nome", e.target.value)
                   }
-                  error="Nome Completo é obrigatório"
-                  placeholder="Insira seu nome"
-                  required={true}
-                />
-
-                <CustomCalendar
-                  id={"dateOfBirth"}
-                  label="Data de Nascimento"
-                  value={profilePayload.userPessoal.dataNascimento}
-                  onChange={(e) =>
-                    handleUserPessoalChange("dataNascimento", e.value ?? null)
-                  }
-                  placeholder="dd/mm/aaaa"
-                  error="Data de Nascimento é obrigatório"
-                  required={true}
-                  showIcon
-                />
-              </div>
-
-              <div
-                style={{ display: "flex", flexDirection: "row", gap: "1.6rem" }}
-              >
-                <CustomInputMask
-                  id="phone"
-                  label="Telefone"
-                  value={profilePayload.userPessoal.telefone ?? ""}
-                  type="text"
-                  setValue={(value) =>
-                    handleUserPessoalChange("telefone", value)
-                  }
-                  mask="(99) 99999-9999"
-                  placeholder="Digite o telefone"
-                  error="Telefone é obrigatório"
+                  error="Título é obrigatório"
+                  placeholder="Insira o título"
                   required={true}
                 />
 
                 <CustomInputTextPrime
-                  id="email"
-                  label="Email"
-                  type="email"
+                  id="cargo"
+                  label="Cargo"
+                  type="text"
                   value={
                     profilePayload.userPessoal.email != null
                       ? profilePayload.userPessoal.email
@@ -246,55 +192,153 @@ export default function Profile() {
                   onChange={(e) =>
                     handleUserPessoalChange("email", e.target.value)
                   }
-                  error="Email é obrigatório"
+                  error="Cargo é obrigatório"
                   required={true}
                   placeholder="exemplo@email.com"
                 />
               </div>
 
               <div
-                style={{ display: "flex", flexDirection: "row", gap: "1.6rem" }}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1.6rem",
+                }}
+              >
+                <CustomTextArea
+                  label="Descrição"
+                  value={profilePayload.perfilPessoal.sobreMim}
+                  onChange={(e) =>
+                    handlePerfilPessoalChange("sobreMim", e.target.value)
+                  }
+                  placeholder="Digite seu texto aqui..."
+                  error={"Este campo é obrigatório"}
+                  required={true}
+                />
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1.6rem",
+                }}
+              >
+                <CustomTextArea
+                  label="Responsabilidade e Atribuições"
+                  value={profilePayload.perfilPessoal.sobreMim}
+                  onChange={(e) =>
+                    handlePerfilPessoalChange("sobreMim", e.target.value)
+                  }
+                  placeholder="Digite seu texto aqui..."
+                  error={"Este campo é obrigatório"}
+                  required={true}
+                />
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1.6rem",
+                }}
+              >
+                <CustomTextArea
+                  label="Diferenciais"
+                  value={profilePayload.perfilPessoal.sobreMim}
+                  onChange={(e) =>
+                    handlePerfilPessoalChange("sobreMim", e.target.value)
+                  }
+                  placeholder="Digite seu texto aqui..."
+                  error={"Este campo é obrigatório"}
+                  required={true}
+                />
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1.6rem",
+                }}
+              >
+                <CustomTextArea
+                  label="Benefícios"
+                  value={profilePayload.perfilPessoal.sobreMim}
+                  onChange={(e) =>
+                    handlePerfilPessoalChange("sobreMim", e.target.value)
+                  }
+                  placeholder="Digite seu texto aqui..."
+                  error={"Este campo é obrigatório"}
+                  required={true}
+                />
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "1.6rem",
+                }}
               >
                 <CustomDropdown
-                  id={"race"}
-                  label="Raça"
+                  id={"regime"}
+                  label="Regime de Trabalho"
                   value={profilePayload.perfilPessoal.corRaca}
                   options={raceOptions}
                   placeholder="Selecione"
-                  error="Raça é obrigatório"
+                  error="Regime de Trabalho é obrigatório"
                   required={true}
                   onChange={(e) =>
                     handlePerfilPessoalChange("corRaca", e.value)
                   }
                 />
 
-                <CustomDropdown
-                  id={"sexualOrientation"}
-                  label="Sexo"
-                  value={profilePayload.perfilPessoal.orientacaoSexual}
-                  options={sexualOrientationOptions}
-                  onChange={(e) =>
-                    handlePerfilPessoalChange("orientacaoSexual", e.value)
+
+                <CustomInputTextPrime
+                  id="jornada"
+                  label="Jornada de Trabalho"
+                  type="text"
+                  value={
+                    profilePayload.userPessoal.email != null
+                      ? profilePayload.userPessoal.email
+                      : user?.email
                   }
-                  placeholder="Selecione"
-                  error="Sexo é obrigatório"
+                  onChange={(e) =>
+                    handleUserPessoalChange("email", e.target.value)
+                  }
+                  error="Cargo é obrigatório"
                   required={true}
+                  placeholder="exemplo@email.com"
+                />
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  gap: "1.6rem",
+                }}
+              >
+                <CustomDropdown
+                  id={"tipo"}
+                  label="Tipo de Contratação"
+                  value={profilePayload.perfilPessoal.corRaca}
+                  options={raceOptions}
+                  placeholder="Selecione"
+                  error="Tipo de Contratação é obrigatório"
+                  required={true}
+                  onChange={(e) =>
+                    handlePerfilPessoalChange("corRaca", e.value)
+                  }
                 />
 
-                <CustomDropdown
-                  id={"affirmativeVacancies"}
-                  label="Aplica-se a vagas afirmativas?"
-                  value={profilePayload.perfilPessoal.classificacaoAfirmativa}
-                  options={affirmativeVacanciesOptions}
-                  onChange={(e) =>
-                    handlePerfilPessoalChange(
-                      "classificacaoAfirmativa",
-                      e.value
-                    )
-                  }
-                  placeholder="Selecione"
-                  error="Este campo é obrigatório"
+                <CustomInputNumber
+                  id="salario"
+                  label="Salário"
+                  value={salario}
                   required={true}
+                  error="Salário é obrigatório"
                 />
               </div>
             </div>
@@ -430,23 +474,6 @@ export default function Profile() {
               </div>
             </div>
             <br />
-          </CustomPanel>
-
-          <CustomPanel header="Sobre mim" toggleable>
-            <p className="p-panel">
-              Insira uma descrição sobre você, seus hobbies e curiosidades
-              pessoais
-            </p>
-
-            <CustomTextArea
-              value={profilePayload.perfilPessoal.sobreMim || ""}
-              onChange={(e) =>
-                handlePerfilPessoalChange("sobreMim", e.target.value)
-              }
-              placeholder="Digite seu texto aqui..."
-              error={"Este campo é obrigatório"}
-              required={true}
-            />
           </CustomPanel>
 
           <ButtomBlue text_button="Salvar" onClick={() => handleProfile()} />

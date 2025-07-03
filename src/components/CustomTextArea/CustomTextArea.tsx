@@ -12,22 +12,15 @@ interface CustomTextAreaProps
 
 const CustomTextArea: React.FC<CustomTextAreaProps> = ({
   label,
-  value: propValue = "",
+  value = "",
   onChange,
   error,
   id,
   ...rest
 }) => {
-  const [value, setValue] = useState<string>(propValue);
   const [touched, setTouched] = useState(false);
-  const isInvalid = rest.required && touched && !value;
-
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setValue(e.target.value);
-    if (onChange) {
-      onChange(e);
-    }
-  };
+  const isEmpty = value === undefined || value === null || value.trim() === "";
+  const isInvalid = rest.required && touched && isEmpty;
 
   return (
     <div className="custom-textarea-container">
@@ -41,13 +34,13 @@ const CustomTextArea: React.FC<CustomTextAreaProps> = ({
       <InputTextarea
         id={id}
         value={value}
-        onChange={handleChange}
+        onChange={(e) => {
+          onChange?.(e);
+        }}
         autoResize
         rows={rest.rows || 5}
         cols={rest.cols || 30}
-        onBlur={(e) => {
-          setTouched(true);
-        }}
+        onBlur={() => setTouched(true)}
         className={`custom-textarea ${
           isInvalid ? "custom-textarea-error" : ""
         }`}
@@ -56,7 +49,7 @@ const CustomTextArea: React.FC<CustomTextAreaProps> = ({
 
       {isInvalid && (
         <span className="custom-textarea-error-message">
-          {isInvalid ? error : "Este campo é obrigatório."}
+          {error || "Este campo é obrigatório."}
         </span>
       )}
     </div>

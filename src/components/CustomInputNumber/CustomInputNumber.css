@@ -1,0 +1,50 @@
+/* Wrapper customizado para InputNumber */
+.custom-input-number-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Aplica borda e padding como o InputText */
+.custom-input-number .p-inputtext {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  border: 1px solid #d1d5db; /* cor padrão borda */
+  border-radius: 0.5rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.custom-input-number-label{
+  color: #616161;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 1.625rem;
+}
+
+
+.custom-input-number-label > .required {
+  color: red;
+  margin-left: 0.1rem
+}
+
+/* Quando focado */
+.custom-input-number .p-inputtext:focus {
+  border-color: #6366f1; /* cor de foco (ex: azul) */
+  box-shadow: 0 0 0 1px #6366f1;
+}
+
+/* Quando inválido */
+.custom-input-number-error .p-inputtext {
+  border-color: #ef4444; /* vermelho borda */
+}
+
+/* Mensagem de erro */
+.custom-input-number-error-message {
+  color: #ef4444;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  display: block;
+}

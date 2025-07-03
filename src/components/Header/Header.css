@@ -53,7 +53,6 @@ header {
   background: #2C2C2C;
   color: #E8E8E8;
   width: 15rem;
-  height: 21rem;
   flex-direction: column;
   padding: 1rem;
 }
@@ -62,7 +61,7 @@ header {
   font-size: 1rem;
   font-weight: 600;
   margin-bottom: .5rem;
-
+  line-height: 1.1rem;
 }
 
 .sidebar .sidebar-email {

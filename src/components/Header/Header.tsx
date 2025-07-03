@@ -26,7 +26,7 @@ export default function Header() {
                 <nav className="header-nav">
                     <NavLink to="/overview" className={({ isActive }) => (isActive ? "active" : "")}>Visão Geral</NavLink>
                     <NavLink to="/opportunity" className={({ isActive }) => (isActive ? "active" : "")}>Oportunidades</NavLink>
-                    <NavLink to="/" className={({ isActive }) => (isActive ? "active" : "")}>Inserir Algo</NavLink>
+                    <NavLink to="/create-vacancy" className={({ isActive }) => (isActive ? "active" : "")}>Criar Vaga</NavLink>
                     <NavLink to="/" className={({ isActive }) => (isActive ? "active" : "")}>Inserir Algo</NavLink>
                     <img
                     className="header-profile"
