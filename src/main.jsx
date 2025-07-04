@@ -14,12 +14,13 @@ import MyResumePage from "./pages/MyResume/MyResume.tsx";
 import { AuthProvider } from "./contexts/AuthContext.tsx";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute.tsx";
 import { ToastContainer } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-import 'primereact/resources/themes/lara-light-indigo/theme.css'; 
-import 'primereact/resources/primereact.min.css';
-import 'primeicons/primeicons.css';
+import "react-toastify/dist/ReactToastify.css";
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "primereact/resources/primereact.min.css";
+import "primeicons/primeicons.css";
 import MyApplications from "./pages/MyApplications/MyApplications.tsx";
 import MyVacancies from "./pages/MyVacancies/MyVacancies.tsx";
+import CreateVacancyPage from "./pages/Vacancy/CreateVacancy.tsx";
 
 const router = createBrowserRouter([
   { path: "/", element: <RegisterPage /> },
@@ -27,12 +28,13 @@ const router = createBrowserRouter([
   { path: "signin", element: <SignInPage /> },
   { path: "overview", element: <OverviewPage /> },
   { path: "opportunity", element: <OpportunityPage /> },
+  { path: "createvacancy", element: <CreateVacancyPage /> },
   {
     element: <PrivateRoute />, // <- tudo abaixo aqui é privado
     children: [
-        { path: "myresume", element: <MyResumePage /> },
-        { path: "myapplications", element: <MyApplications /> },
-        { path: "myvacancies", element: <MyVacancies /> },
+      { path: "myresume", element: <MyResumePage /> },
+      { path: "myapplications", element: <MyApplications /> },
+      { path: "myvacancies", element: <MyVacancies /> },
     ],
   },
 ]);
@@ -41,7 +43,9 @@ createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthProvider>
       <RouterProvider router={router} />
-      <ToastContainer toastStyle={{ backgroundColor: '#3a3a3a', color: 'white' }}/>
+      <ToastContainer
+        toastStyle={{ backgroundColor: "#3a3a3a", color: "white" }}
+      />
     </AuthProvider>
   </StrictMode>
 );

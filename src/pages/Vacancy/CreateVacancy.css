@@ -1,0 +1,11 @@
+div.info-my-resume {
+  padding: 2rem 5.56rem 0rem;
+}
+
+div.my-resume div.info-my-resume h1 {
+  color: #2c2c2c;
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 3.4375rem;
+  margin: 0;
+}

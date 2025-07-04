@@ -2,8 +2,9 @@ import React from "react";
 import "./CustomSelect.css";
 
 type SelectOption = {
-  value: string;
-  label: string;
+  id: number;
+  sigla?: string;
+  nome: string;
 };
 
 type SelectType = {
@@ -29,8 +30,8 @@ export default function CustomSelect({
       <select id={id} value={value} onChange={onChange}>
         <option value="">{selectLabel}</option>
         {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
+          <option key={option.id} value={option.sigla}>
+            {option.nome}
           </option>
         ))}
       </select>

@@ -1,4 +1,3 @@
-import React from "react";
 import { FaRegBookmark, FaLocationDot } from "react-icons/fa6";
 import "./CardOpportunity.css";
 import ButtomCard from "../../ButtomCard/ButtomCard";
@@ -20,7 +19,6 @@ export default function CardOpportunity({
   topic,
   date,
 }: OpportunityType) {
-  console.log(topic);
   return (
     <div className="card">
       <div className="card-title">

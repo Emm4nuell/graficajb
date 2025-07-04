@@ -1,61 +1,66 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Opportunity.css";
 import CardOpportunity from "../../components/card/cardOpportunity/CardOpportunity";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
 import CardFilter from "../../components/card/CardFilter/CardFilter";
 import CustomButtom from "../../components/CustomButtom/CustomButtom";
 import { FaFilter } from "react-icons/fa6";
-import { OpportunitieType } from "../../types/OpportunitiesType";
+import {
+  defaultOpportunitie,
+  OpportunitieType,
+} from "../../types/OpportunitiesType";
 import Header from "../../components/Header/Header";
-
-const listOpportunities = [
-  {
-    title: "Senior Java Developer",
-    subtitle: "João Pessoa - PB",
-    topic: ["Presencial", "Efetivo"],
-    date: "Postada há 2 dias",
-  },
-  {
-    title: "Front-end React Developer",
-    subtitle: "Campina Grande - PB",
-    topic: ["Remoto", "Contrato"],
-    date: "Postada há 5 dias",
-  },
-  {
-    title: "Fullstack Developer (Node.js + React)",
-    subtitle: "Recife - PE",
-    topic: ["Híbrido", "Efetivo"],
-    date: "Postada há 1 dia",
-  },
-  {
-    title: "DevOps Engineer",
-    subtitle: "Natal - RN",
-    topic: ["Presencial", "CLT"],
-    date: "Postada há 3 dias",
-  },
-  {
-    title: "Backend Python Developer",
-    subtitle: "Fortaleza - CE",
-    topic: ["Remoto", "PJ"],
-    date: "Postada há 7 dias",
-  },
-  {
-    title: "QA Automation Engineer",
-    subtitle: "João Pessoa - PB",
-    topic: ["Híbrido", "Efetivo"],
-    date: "Postada há 4 dias",
-  },
-];
+import { useLocalidade } from "../../hooks/userLocalidades";
+import { opportunityService } from "../../services/opportunityService";
+import { useNavigate } from "react-router-dom";
 
 export default function OpportunityPage() {
+  const navigator = useNavigate();
+  const { estados, cidades, buscarEstados } = useLocalidade();
   const [cardFilter, setCardFilter] = useState<boolean>(false);
-  const [opportunities, setOpportunities] =
-    useState<OpportunitieType[]>(listOpportunities);
+  const [estado, setEstado] = useState("");
+  const [cidade, setCidade] = useState("");
+  const [contratacao, setContratacao] = useState("");
+  const [regime, setRegime] = useState("");
+  const [opportunities, setOpportunities] = useState<OpportunitieType[]>([
+    defaultOpportunitie,
+  ]);
 
   const visible = () => {
     setCardFilter(!cardFilter);
-    console.log("Botao visible acionado! ", cardFilter);
   };
+
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        const data = await opportunityService(localStorage.getItem("token"));
+        setOpportunities(data);
+      } catch (error) {
+        if (error.message.includes("401")) {
+          localStorage.removeItem("token");
+          navigator("/signin");
+        }
+      }
+    };
+
+    fetchOpportunities();
+  }, []);
+
+  const selectEstado = (value: string) => {
+    buscarEstados(value);
+    console.warn(cidades);
+    setEstado(value);
+  };
+
+  const selectCidade = (value: string) => {
+    console.warn(cidades);
+    setCidade(value);
+  };
+
+  useEffect(() => {
+    buscarEstados();
+    console.error(estados);
+  }, []);
 
   return (
     <>
@@ -71,10 +76,10 @@ export default function OpportunityPage() {
               {opportunities.map((value, index) => (
                 <CardOpportunity
                   key={index}
-                  title={value.title}
-                  subtitle={value.subtitle}
-                  topic={value.topic}
-                  date={value.date}
+                  title={value.titulo}
+                  subtitle={`${value.endereco.cidade} - ${value.endereco.uf}`}
+                  topic={[value.regimeTrabalho]}
+                  date={"Postada há 5 dias"}
                 />
               ))}
             </div>
@@ -98,56 +103,56 @@ export default function OpportunityPage() {
                 <CustomSelect
                   id="1"
                   label="Estado"
-                  value={"estado"}
+                  value={estado}
                   selectLabel="Selecione o estado"
-                  onChange={(e) => {}}
-                  options={[
-                    { value: "pb", label: "Paraíba" },
-                    { value: "pe", label: "Pernambuco" },
-                    { value: "rn", label: "Rio Grande do Norte" },
-                  ]}
+                  onChange={(e) => {
+                    selectEstado(e.target.value);
+                  }}
+                  options={estados}
                 />
                 <CustomSelect
                   id="2"
                   label="Cidade"
-                  value={"Cidade"}
+                  value={cidade}
                   selectLabel="Selecione a cidade"
-                  onChange={(e) => {}}
-                  options={[
-                    { value: "pb", label: "Paraíba" },
-                    { value: "pe", label: "Pernambuco" },
-                    { value: "rn", label: "Rio Grande do Norte" },
-                  ]}
+                  onChange={(e) => {
+                    setCidade(e.target.value);
+                  }}
+                  options={cidades}
                 />
               </div>
               <h2>Dados da vaga</h2>
               <div className="select">
                 <CustomSelect
                   id="1"
-                  label="Estado"
-                  value={"estado"}
-                  selectLabel="Tipo da vaga"
-                  onChange={(e) => {}}
+                  label="Regime de Trabalho"
+                  value={regime}
+                  selectLabel="Selecione"
+                  onChange={(e) => {
+                    setRegime(e.target.value);
+                  }}
                   options={[
-                    { value: "pb", label: "Paraíba" },
-                    { value: "pe", label: "Pernambuco" },
-                    { value: "rn", label: "Rio Grande do Norte" },
+                    { id: 1, nome: "Presencial" },
+                    { id: 2, nome: "Híbrido" },
+                    { id: 3, nome: "Remoto" },
                   ]}
                 />
                 <CustomSelect
                   id="1"
-                  label="Estado"
-                  value={"estado"}
-                  selectLabel="Elegível para PCD?"
-                  onChange={(e) => {}}
+                  label="Tipo de contratação"
+                  value={contratacao}
+                  selectLabel="Selecione"
+                  onChange={(e) => {
+                    setContratacao(e.target.value);
+                  }}
                   options={[
-                    { value: "sim", label: "Sim" },
-                    { value: "nao", label: "Não" },
+                    { id: 1, nome: "PJ" },
+                    { id: 2, nome: "PF" },
                   ]}
                 />
               </div>
               <CustomButtom
-                text="Outros Filtros"
+                text="Filtrar"
                 icon={<FaFilter />}
                 color="#2c2c2c"
                 onClick={() => visible()}
