@@ -106,3 +106,13 @@ h2 {
 span {
   color: var(--span-color);
 }
+
+@media screen and (max-width: 800px) {
+  .list-opportunities {
+    display: grid;
+    grid-template-columns: 1fr; /* 1 coluna que ocupa toda largura */
+  }
+  .opportunities {
+    padding: 1px;
+  }
+}

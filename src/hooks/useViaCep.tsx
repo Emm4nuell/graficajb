@@ -3,10 +3,11 @@ import { toast } from 'react-toastify';
 
 export function useViaCep() {
   const [endereco, setEndereco] = useState({
-    logradouro: "",
+    rua: "",
     bairro: "",
-    localidade: "",
-    uf: "",
+    cidade: "",
+    estado: "",
+    cep: "",
   });
 
   const fetchAddress = async (cep: string) => {
@@ -28,13 +29,13 @@ export function useViaCep() {
         toast.error("CEP não encontrado.");
         return;
       }
-
-      setEndereco({
-        logradouro: data.logradouro || "",
+      return {
+        rua: data.logradouro || "",
         bairro: data.bairro || "",
-        localidade: data.localidade || "",
-        uf: data.uf || "",
-      });
+        cidade: data.localidade || "",
+        estado: data.uf || "",
+        cep: cleanedCep || "",
+      };
     } catch (error) {
       console.error("Erro ao buscar CEP:", error);
     }

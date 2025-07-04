@@ -6,7 +6,7 @@ import { defaultSignIn, SignInType } from "../../types/SignInType";
 import { Link, useNavigate } from "react-router-dom";
 import { signInService } from "../../services/signInService";
 import { useAuth } from "../../contexts/AuthContext";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 export default function SignInPage() {
   const [signIn, setSignIn] = useState<SignInType>(defaultSignIn);
@@ -20,10 +20,10 @@ export default function SignInPage() {
     try {
       const res = await signInService(signIn);
       login(res.token);
-      toast.success('Login realizado com sucesso!');
+      toast.success("Login realizado com sucesso!");
       navigate("/overview");
     } catch (error) {
-      toast.error('Usuário ou senha inválidos');
+      toast.error("Usuário ou senha inválidos");
       console.error("Erro no login:", error);
     }
   };
@@ -53,6 +53,7 @@ export default function SignInPage() {
           >
             <div style={{ display: "flex", flexDirection: "row" }}>
               <CustomInputText
+                id="email"
                 type_input={"email"}
                 label={"Email"}
                 placeholder={"Insira seu email"}
@@ -62,6 +63,7 @@ export default function SignInPage() {
             </div>
             <div style={{ display: "flex", flexDirection: "row" }}>
               <CustomInputText
+                id="password"
                 type_input={"password"}
                 label={"Senha"}
                 placeholder={"Insira sua senha"}

@@ -4,6 +4,8 @@ import { createContext, useContext, useEffect, useState } from "react";
 type TokenPayload = {
   nome: string;
   perfil: string;
+  id: string;
+  email: string;
   exp: number;
 };
 
@@ -11,14 +13,13 @@ type AuthContextType = {
   user: TokenPayload | null;
   token: string | null;
   isAuthenticated: boolean;
-  login: (token: string) => void;
+  login: (token: string | null, nome?: string, email?: string) => void;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-
   const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<TokenPayload | null>(null);
 
@@ -42,18 +43,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  const login = (newToken: string) => {
-    const decoded = jwtDecode<TokenPayload>(newToken);
+  const login = (newToken: string | null, nome?: string, email?: string) => {
+    const decoded = jwtDecode<TokenPayload>(newToken ?? "");
     setToken(newToken);
-    setUser(decoded);
-    localStorage.setItem("token", newToken);
-    localStorage.setItem("user",
-        JSON.stringify({
-        nome: decoded.nome,
+    setUser({
+        nome: nome ? nome : decoded.nome,
         perfil: decoded.perfil,
+        id: decoded.id,
+        email: email ? email : decoded.email,
         exp: decoded.exp,
-        })
-  );
+      });
+    localStorage.setItem("token", newToken ?? "");
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        nome: nome ? nome : decoded.nome,
+        perfil: decoded.perfil,
+        id: decoded.id,
+        email: email ? email : decoded.email,
+        exp: decoded.exp,
+      })
+    );
   };
 
   const logout = () => {
@@ -65,7 +75,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, isAuthenticated, login, logout}}
+      value={{ user, token, isAuthenticated, login, logout }}
     >
       {children}
     </AuthContext.Provider>

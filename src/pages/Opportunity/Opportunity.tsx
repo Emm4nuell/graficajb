@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./Opportunity.css";
 import CardOpportunity from "../../components/card/cardOpportunity/CardOpportunity";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
-import CardFilter from "../../components/card/CardFilter/CardFilter";
+import CustomInputTextPrime from "../../components/CustomInputTextPrime/CustomInputTextPrime";
 import CustomButtom from "../../components/CustomButtom/CustomButtom";
 import { FaFilter } from "react-icons/fa6";
 import {
@@ -13,54 +13,45 @@ import Header from "../../components/Header/Header";
 import { useLocalidade } from "../../hooks/userLocalidades";
 import { opportunityService } from "../../services/opportunityService";
 import { useNavigate } from "react-router-dom";
+import { CustomFilter, defaultCustomerFilter } from "../../types/FilterType";
+import { keyof } from "zod/v4";
 
 export default function OpportunityPage() {
   const navigator = useNavigate();
+  const [filter, setFilter] = useState<CustomFilter>(defaultCustomerFilter);
   const { estados, cidades, buscarEstados } = useLocalidade();
-  const [cardFilter, setCardFilter] = useState<boolean>(false);
-  const [estado, setEstado] = useState("");
-  const [cidade, setCidade] = useState("");
-  const [contratacao, setContratacao] = useState("");
-  const [regime, setRegime] = useState("");
   const [opportunities, setOpportunities] = useState<OpportunitieType[]>([
     defaultOpportunitie,
   ]);
 
-  const visible = () => {
-    setCardFilter(!cardFilter);
+  const fetchOpportunities = async () => {
+    try {
+      const data = await opportunityService(
+        localStorage.getItem("token"),
+        filter
+      );
+      setOpportunities(data);
+    } catch (error) {
+      if (error.message.includes("401")) {
+        localStorage.removeItem("token");
+        navigator("/signin");
+      }
+    }
   };
 
   useEffect(() => {
-    const fetchOpportunities = async () => {
-      try {
-        const data = await opportunityService(localStorage.getItem("token"));
-        setOpportunities(data);
-      } catch (error) {
-        if (error.message.includes("401")) {
-          localStorage.removeItem("token");
-          navigator("/signin");
-        }
-      }
-    };
-
     fetchOpportunities();
+    buscarEstados();
   }, []);
 
   const selectEstado = (value: string) => {
     buscarEstados(value);
-    console.warn(cidades);
-    setEstado(value);
+    setFilter((prev) => ({ ...prev, uf: value }));
   };
 
-  const selectCidade = (value: string) => {
-    console.warn(cidades);
-    setCidade(value);
+  const onchangerInput = (field: keyof CustomFilter, value: string) => {
+    setFilter((prev) => ({ ...prev, [field]: value }));
   };
-
-  useEffect(() => {
-    buscarEstados();
-    console.error(estados);
-  }, []);
 
   return (
     <>
@@ -86,24 +77,22 @@ export default function OpportunityPage() {
             <div className="filter">
               <h1 id="title">Filtros rápidos</h1>
               <h2>Modelo de trabalho</h2>
-              <div className="checkbox">
-                <input type="checkbox" />
-                <span>Presencial</span>
-              </div>
-              <div className="checkbox">
-                <input type="checkbox" />
-                <span>Híbrido</span>
-              </div>
-              <div className="checkbox">
-                <input type="checkbox" />
-                <span>Remoto</span>
-              </div>
+              <CustomInputTextPrime
+                label="Título"
+                placeholder="Ex. Desenvolvedor"
+                onChange={(e) => onchangerInput("titulo", e.target.value)}
+              />
+              <CustomInputTextPrime
+                label="Cargo"
+                placeholder="Ex. Desenvolvedor"
+                onChange={(e) => onchangerInput("cargo", e.target.value)}
+              />
               <h2>Local de trabalho</h2>
               <div className="select">
                 <CustomSelect
                   id="1"
                   label="Estado"
-                  value={estado}
+                  value={filter.uf}
                   selectLabel="Selecione o estado"
                   onChange={(e) => {
                     selectEstado(e.target.value);
@@ -113,10 +102,13 @@ export default function OpportunityPage() {
                 <CustomSelect
                   id="2"
                   label="Cidade"
-                  value={cidade}
+                  value={filter.localidade}
                   selectLabel="Selecione a cidade"
                   onChange={(e) => {
-                    setCidade(e.target.value);
+                    setFilter((prev) => ({
+                      ...prev,
+                      localidade: e.target.value,
+                    }));
                   }}
                   options={cidades}
                 />
@@ -126,10 +118,13 @@ export default function OpportunityPage() {
                 <CustomSelect
                   id="1"
                   label="Regime de Trabalho"
-                  value={regime}
+                  value={filter.regimeTrabalho}
                   selectLabel="Selecione"
                   onChange={(e) => {
-                    setRegime(e.target.value);
+                    setFilter((prev) => ({
+                      ...prev,
+                      regimeTrabalho: e.target.value,
+                    }));
                   }}
                   options={[
                     { id: 1, nome: "Presencial" },
@@ -140,10 +135,13 @@ export default function OpportunityPage() {
                 <CustomSelect
                   id="1"
                   label="Tipo de contratação"
-                  value={contratacao}
+                  value={filter.tipoContratacao}
                   selectLabel="Selecione"
                   onChange={(e) => {
-                    setContratacao(e.target.value);
+                    setFilter((prev) => ({
+                      ...prev,
+                      tipoContratacao: e.target.value,
+                    }));
                   }}
                   options={[
                     { id: 1, nome: "PJ" },
@@ -155,16 +153,12 @@ export default function OpportunityPage() {
                 text="Filtrar"
                 icon={<FaFilter />}
                 color="#2c2c2c"
-                onClick={() => visible()}
+                onClick={() => {
+                  fetchOpportunities();
+                }}
               />
             </div>
           </div>
-
-          {cardFilter && (
-            <div className="card-absolute">
-              <CardFilter visible={visible} />
-            </div>
-          )}
         </div>
       </div>
     </>

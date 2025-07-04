@@ -2,6 +2,7 @@ import React from "react";
 import "./CustomInputText.css";
 
 type TypeInputLabel = {
+  id: string;
   type_input: string;
   label: string;
   placeholder: string;
@@ -10,6 +11,7 @@ type TypeInputLabel = {
 };
 
 export default function CustomInputText({
+  id,
   type_input,
   label,
   placeholder,
@@ -21,7 +23,7 @@ export default function CustomInputText({
       <label htmlFor="input">{label}</label>
       <input
         type={type_input}
-        id="input"
+        id={id}
         placeholder={placeholder}
         value={value}
         onChange={onChange}

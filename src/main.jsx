@@ -20,7 +20,54 @@ import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
 import MyApplications from "./pages/MyApplications/MyApplications.tsx";
 import MyVacancies from "./pages/MyVacancies/MyVacancies.tsx";
-import CreateVacancyPage from "./pages/Vacancy/CreateVacancy.tsx";
+import Profile from "./pages/Profile/Profile.tsx";
+import { addLocale } from "primereact/api";
+import CreateVacancy from "./pages/CreateVacancy/CreateVacancy.tsx";
+
+addLocale("pt-BR", {
+  firstDayOfWeek: 0,
+  dayNames: [
+    "domingo",
+    "segunda-feira",
+    "terça-feira",
+    "quarta-feira",
+    "quinta-feira",
+    "sexta-feira",
+    "sábado",
+  ],
+  dayNamesShort: ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"],
+  dayNamesMin: ["D", "S", "T", "Q", "Q", "S", "S"],
+  monthNames: [
+    "janeiro",
+    "fevereiro",
+    "março",
+    "abril",
+    "maio",
+    "junho",
+    "julho",
+    "agosto",
+    "setembro",
+    "outubro",
+    "novembro",
+    "dezembro",
+  ],
+  monthNamesShort: [
+    "jan",
+    "fev",
+    "mar",
+    "abr",
+    "mai",
+    "jun",
+    "jul",
+    "ago",
+    "set",
+    "out",
+    "nov",
+    "dez",
+  ],
+  today: "Hoje",
+  clear: "Limpar",
+});
 
 const router = createBrowserRouter([
   { path: "/", element: <RegisterPage /> },
@@ -28,13 +75,14 @@ const router = createBrowserRouter([
   { path: "signin", element: <SignInPage /> },
   { path: "overview", element: <OverviewPage /> },
   { path: "opportunity", element: <OpportunityPage /> },
-  { path: "createvacancy", element: <CreateVacancyPage /> },
   {
     element: <PrivateRoute />, // <- tudo abaixo aqui é privado
     children: [
+      { path: "profile", element: <Profile /> },
       { path: "myresume", element: <MyResumePage /> },
       { path: "myapplications", element: <MyApplications /> },
       { path: "myvacancies", element: <MyVacancies /> },
+      { path: "createvacancy", element: <CreateVacancy /> },
     ],
   },
 ]);

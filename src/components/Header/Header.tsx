@@ -3,11 +3,12 @@ import "./Header.css";
 import { Link, NavLink, useNavigate  } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import ButtomCard from "../ButtomCard/ButtomCard";
+import { toCapitalize } from "../../utils/toCapitalize";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const toggleMenu = () => setIsOpen(!isOpen);
-  const { logout, isAuthenticated } = useAuth()
+  const { user, logout, isAuthenticated } = useAuth()
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -25,7 +26,7 @@ export default function Header() {
                 <nav className="header-nav">
                     <NavLink to="/overview" className={({ isActive }) => (isActive ? "active" : "")}>Visão Geral</NavLink>
                     <NavLink to="/opportunity" className={({ isActive }) => (isActive ? "active" : "")}>Oportunidades</NavLink>
-                    <NavLink to="/" className={({ isActive }) => (isActive ? "active" : "")}>Inserir Algo</NavLink>
+                    <NavLink to="/create-vacancy" className={({ isActive }) => (isActive ? "active" : "")}>Criar Vaga</NavLink>
                     <NavLink to="/" className={({ isActive }) => (isActive ? "active" : "")}>Inserir Algo</NavLink>
                     <img
                     className="header-profile"
@@ -48,10 +49,10 @@ export default function Header() {
 
         {isOpen && (
           <div className="sidebar">
-            <span className="sidebar-name">João Pessoa da Silva</span>
-            <span className="sidebar-email">joaopessoadasilva@gmail.com</span>
+            <span className="sidebar-name">{toCapitalize(user?.nome)}</span>
+            <span className="sidebar-email">{user?.email}</span>
             <div className="sidebar-options">
-              <Link to={"/perfil"}>
+              <Link to={"/profile"}>
                 <img src="/src/assets/icons/perfil.svg" alt="" />
                 Perfil
               </Link>
