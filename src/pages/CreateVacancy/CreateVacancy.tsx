@@ -11,60 +11,42 @@ import { useViaCep } from "../../hooks/useViaCep";
 import { useAuth } from "../../contexts/AuthContext";
 import CustomInputMask from "../../components/CustomInputMask/CustomInputMask";
 import { toCapitalize } from "../../utils/toCapitalize";
-import {
-  ProfilePayloadType,
-  defaultProfilePayload,
-  validationProfilePayload,
-} from "../../types/ProfileType";
-import { savePerfilService } from "../../services/saveProfileService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import CustomInputNumber from "../../components/CustomInputNumber/CustomInputNumber";
+import { CreateVacancyType, defaultCreateVacancy, ValidationCreateVacancy, validationCreateVacancyPayload } from "../../types/CreateVacancyType";
+import { saveVacancyService } from "../../services/saveVacancyService";
 
 export default function CreateVacancy() {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const navigate = useNavigate();
-  const [salario, setSalario] = useState(null)
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
   >({});
 
-  const [profilePayload, setProfilePayload] = useState<ProfilePayloadType>({
-    ...defaultProfilePayload,
-    idUsuario: user?.id || "",
+  const [createVacancyPayload, setCreateVacancyPayload] = useState<CreateVacancyType>({
+    ...defaultCreateVacancy,
   });
 
-  const handleRootChange = (field: keyof ProfilePayloadType, value: string) => {
-    setProfilePayload((prev) => ({
+  const handleCreateVacancyChange = (
+    field: keyof CreateVacancyType,
+    value: string | number | null
+  ) => {
+    setCreateVacancyPayload((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
-  const handleUserPessoalChange = (
-    field: keyof ProfilePayloadType["userPessoal"],
-    value: string | Date | null
+  const handleEnderecoChange = (
+    field: keyof CreateVacancyType["endereco"],
+    value: string 
   ) => {
-    setProfilePayload((prev) => ({
+    setCreateVacancyPayload((prev) => ({
       ...prev,
-      userPessoal: {
-        ...prev.userPessoal,
-        nome: user?.nome || "",
-        email: user?.email || "",
-        [field]: value,
-      },
-    }));
-  };
-
-  const handlePerfilPessoalChange = (
-    field: keyof ProfilePayloadType["perfilPessoal"],
-    value: string | number | boolean | null
-  ) => {
-    setProfilePayload((prev) => ({
-      ...prev,
-      perfilPessoal: {
-        ...prev.perfilPessoal,
+      endereco: {
+        ...prev.endereco,
         [field]: value,
       },
     }));
@@ -72,41 +54,39 @@ export default function CreateVacancy() {
 
   const { endereco, fetchAddress, setEndereco } = useViaCep();
 
-  const affirmativeVacanciesOptions = [
-    { label: "Sim", value: true },
-    { label: "Não", value: false },
+  const workingDayOptions = [
+    { label: "6x1", value: "6x1" },
+    { label: "5x2", value: "5x2" },
+    { label: "4x3", value: "4x3" },
+    { label: "A combinar", value: "A combinar" },
   ];
 
-  const raceOptions = [
-    { label: "Branca", value: 1 },
-    { label: "Preta", value: 2 },
-    { label: "Parda", value: 3 },
-    { label: "Amarela", value: 4 },
-    { label: "Indígena", value: 5 },
-    { label: "Não desejo declarar", value: 6 },
-    { label: "Outra", value: 7 },
+  const workRegimeOptions = [
+    { label: "Presencial", value: "Presencial" },
+    { label: "Remoto", value: "Remoto" },
+    { label: "Híbrido", value: "Híbrido" },
   ];
 
-  const sexualOrientationOptions = [
-    { label: "Masculino", value: 1 },
-    { label: "Feminino", value: 2 },
-    { label: "Outro", value: 3 },
+  const typeOfHiringOptions = [
+    { label: "CLT", value: "CLT" },
+    { label: "PJ", value: "PJ" },
+    { label: "Estágio", value: "Estágio" },
   ];
 
-  const handleProfile = async () => {
-    console.log(profilePayload);
+  const handleCreateVacancy = async () => {
+    console.log(createVacancyPayload);
 
     // Limpa erros antigos
     setValidationErrors({});
 
     try {
       // Valida
-      validationProfilePayload.parse(profilePayload);
+      validationCreateVacancyPayload.parse(createVacancyPayload);
 
       // Se chegou aqui, payload é válido, pode enviar
-      const res = await savePerfilService(profilePayload, token);
+      const res = await saveVacancyService(createVacancyPayload, token);
 
-      toast.success("Dados salvos com sucesso!");
+      toast.success("Vaga criada com sucesso!");
       navigate("/overview");
     } catch (error) {
       // Se for erro de validação Zod
@@ -122,27 +102,26 @@ export default function CreateVacancy() {
 
         toast.error("Verifique os campos obrigatórios.");
         console.error("Erros de validação:", error);
-        return; // ⚠️ Não continua o envio
+        return; 
       }
 
-      // Outros erros de API
       toast.error("Ocorreu um erro ao salvar.");
       console.error("Erro no envio:", error);
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      setProfilePayload((prev) => ({
-        ...prev,
-        userPessoal: {
-          ...prev.userPessoal,
-          nome: toCapitalize(user.nome) || "",
-          email: user.email || "",
-        },
-      }));
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     setCreateVacancyPayload((prev) => ({
+  //       ...prev,
+  //       userPessoal: {
+  //         ...prev.userPessoal,
+  //         nome: toCapitalize(user.nome) || "",
+  //         email: user.email || "",
+  //       },
+  //     }));
+  //   }
+  // }, [user]);
 
   return (
     <>
@@ -168,12 +147,12 @@ export default function CreateVacancy() {
                   id="titulo"
                   label="Título"
                   value={
-                    profilePayload.userPessoal.nome != null
-                      ? profilePayload.userPessoal.nome
-                      : toCapitalize(user?.nome)
+                    createVacancyPayload.titulo != null
+                      ? createVacancyPayload.titulo
+                      : "Titulo"
                   }
                   onChange={(e) =>
-                    handleUserPessoalChange("nome", e.target.value)
+                    handleCreateVacancyChange("titulo", e.target.value)
                   }
                   error="Título é obrigatório"
                   placeholder="Insira o título"
@@ -185,16 +164,16 @@ export default function CreateVacancy() {
                   label="Cargo"
                   type="text"
                   value={
-                    profilePayload.userPessoal.email != null
-                      ? profilePayload.userPessoal.email
-                      : user?.email
+                    createVacancyPayload.cargo != null
+                      ? createVacancyPayload.cargo
+                      : "Cargo"
                   }
                   onChange={(e) =>
-                    handleUserPessoalChange("email", e.target.value)
+                    handleCreateVacancyChange("cargo", e.target.value)
                   }
                   error="Cargo é obrigatório"
                   required={true}
-                  placeholder="exemplo@email.com"
+                  placeholder="Insira o cargo"
                 />
               </div>
 
@@ -207,9 +186,9 @@ export default function CreateVacancy() {
               >
                 <CustomTextArea
                   label="Descrição"
-                  value={profilePayload.perfilPessoal.sobreMim}
+                  value={createVacancyPayload.descricao}
                   onChange={(e) =>
-                    handlePerfilPessoalChange("sobreMim", e.target.value)
+                    handleCreateVacancyChange("descricao", e.target.value)
                   }
                   placeholder="Digite seu texto aqui..."
                   error={"Este campo é obrigatório"}
@@ -226,9 +205,9 @@ export default function CreateVacancy() {
               >
                 <CustomTextArea
                   label="Responsabilidade e Atribuições"
-                  value={profilePayload.perfilPessoal.sobreMim}
+                  value={createVacancyPayload.atividades}
                   onChange={(e) =>
-                    handlePerfilPessoalChange("sobreMim", e.target.value)
+                    handleCreateVacancyChange("atividades", e.target.value)
                   }
                   placeholder="Digite seu texto aqui..."
                   error={"Este campo é obrigatório"}
@@ -245,13 +224,11 @@ export default function CreateVacancy() {
               >
                 <CustomTextArea
                   label="Diferenciais"
-                  value={profilePayload.perfilPessoal.sobreMim}
+                  value={createVacancyPayload.diferenciais}
                   onChange={(e) =>
-                    handlePerfilPessoalChange("sobreMim", e.target.value)
+                    handleCreateVacancyChange("diferenciais", e.target.value)
                   }
                   placeholder="Digite seu texto aqui..."
-                  error={"Este campo é obrigatório"}
-                  required={true}
                 />
               </div>
 
@@ -264,13 +241,11 @@ export default function CreateVacancy() {
               >
                 <CustomTextArea
                   label="Benefícios"
-                  value={profilePayload.perfilPessoal.sobreMim}
+                  value={createVacancyPayload.beneficios}
                   onChange={(e) =>
-                    handlePerfilPessoalChange("sobreMim", e.target.value)
+                    handleCreateVacancyChange("beneficios", e.target.value)
                   }
                   placeholder="Digite seu texto aqui..."
-                  error={"Este campo é obrigatório"}
-                  required={true}
                 />
               </div>
 
@@ -284,32 +259,25 @@ export default function CreateVacancy() {
                 <CustomDropdown
                   id={"regime"}
                   label="Regime de Trabalho"
-                  value={profilePayload.perfilPessoal.corRaca}
-                  options={raceOptions}
+                  value={createVacancyPayload.regimeTrabalho}
+                  options={workRegimeOptions}
                   placeholder="Selecione"
                   error="Regime de Trabalho é obrigatório"
                   required={true}
                   onChange={(e) =>
-                    handlePerfilPessoalChange("corRaca", e.value)
+                    handleCreateVacancyChange("regimeTrabalho", e.value)
                   }
                 />
 
-
-                <CustomInputTextPrime
-                  id="jornada"
+                <CustomDropdown
+                  id={"jornada"}
                   label="Jornada de Trabalho"
-                  type="text"
-                  value={
-                    profilePayload.userPessoal.email != null
-                      ? profilePayload.userPessoal.email
-                      : user?.email
-                  }
+                  value={createVacancyPayload.horarioTrabalho}
+                  options={workingDayOptions}
+                  placeholder="Selecione"
                   onChange={(e) =>
-                    handleUserPessoalChange("email", e.target.value)
+                    handleCreateVacancyChange("horarioTrabalho", e.value)
                   }
-                  error="Cargo é obrigatório"
-                  required={true}
-                  placeholder="exemplo@email.com"
                 />
               </div>
 
@@ -323,22 +291,23 @@ export default function CreateVacancy() {
                 <CustomDropdown
                   id={"tipo"}
                   label="Tipo de Contratação"
-                  value={profilePayload.perfilPessoal.corRaca}
-                  options={raceOptions}
+                  value={createVacancyPayload.tipoContratacao}
+                  options={typeOfHiringOptions}
                   placeholder="Selecione"
                   error="Tipo de Contratação é obrigatório"
                   required={true}
                   onChange={(e) =>
-                    handlePerfilPessoalChange("corRaca", e.value)
+                    handleCreateVacancyChange("tipoContratacao", e.value)
                   }
                 />
 
                 <CustomInputNumber
                   id="salario"
                   label="Salário"
-                  value={salario}
-                  required={true}
-                  error="Salário é obrigatório"
+                  value={createVacancyPayload.salario}
+                  onChange={(e) =>
+                    handleCreateVacancyChange("salario", e.value)
+                  }
                 />
               </div>
             </div>
@@ -358,26 +327,26 @@ export default function CreateVacancy() {
                 <CustomInputMask
                   id="cep"
                   label="CEP"
-                  value={profilePayload.perfilPessoal.enderecoCEP}
+                  value={createVacancyPayload.endereco.cep}
                   setValue={(value) =>
-                    handlePerfilPessoalChange("enderecoCEP", value)
+                    handleEnderecoChange("cep", value)
                   }
                   type="text"
                   onBlur={async () => {
                     const result = await fetchAddress(
-                      profilePayload.perfilPessoal.enderecoCEP
+                      createVacancyPayload.endereco.cep
                     );
 
                     if (result) {
-                      setProfilePayload((prev) => ({
+                      setCreateVacancyPayload((prev) => ({
                         ...prev,
-                        perfilPessoal: {
-                          ...prev.perfilPessoal,
-                          enderecoBairro: result.bairro || null,
-                          enderecoCidade: result.cidade || null,
-                          enderecoEstado: result.estado || null,
-                          enderecoRua: result.rua || null,
-                          enderecoCEP: result.cep,
+                        endereco: {
+                          ...prev.endereco,
+                          bairro: result.bairro,
+                          cidade: result.cidade,
+                          uf: result.estado,
+                          rua: result.rua,
+                          cep: result.cep,
                         },
                       }));
                     }
@@ -392,12 +361,12 @@ export default function CreateVacancy() {
                   id="endereco"
                   label="Rua"
                   value={
-                    profilePayload.perfilPessoal.enderecoRua != null
-                      ? profilePayload.perfilPessoal.enderecoRua
+                    createVacancyPayload.endereco.rua != null
+                      ? createVacancyPayload.endereco.rua
                       : endereco.rua
                   }
                   onChange={(e) =>
-                    handlePerfilPessoalChange("enderecoRua", e.target.value)
+                    handleEnderecoChange("rua", e.target.value)
                   }
                   error="Rua é obrigatório"
                   required={true}
@@ -412,12 +381,12 @@ export default function CreateVacancy() {
                   id="bairro"
                   label="Bairro"
                   value={
-                    profilePayload.perfilPessoal.enderecoBairro != null
-                      ? profilePayload.perfilPessoal.enderecoBairro
+                    createVacancyPayload.endereco.bairro != null
+                      ? createVacancyPayload.endereco.bairro
                       : endereco.bairro
                   }
                   onChange={(e) =>
-                    handlePerfilPessoalChange("enderecoBairro", e.target.value)
+                    handleEnderecoChange("bairro", e.target.value)
                   }
                   error="Bairro é obrigatório"
                   required={true}
@@ -427,12 +396,10 @@ export default function CreateVacancy() {
                 <CustomInputTextPrime
                   id="numero"
                   label="Número"
-                  value={profilePayload.perfilPessoal.enderecoNumero}
+                  value={createVacancyPayload.endereco.numero}
                   onChange={(e) =>
-                    handlePerfilPessoalChange("enderecoNumero", e.target.value)
+                    handleEnderecoChange("numero", e.target.value)
                   }
-                  error="Número é obrigatório"
-                  required={true}
                   placeholder="Insira o número do seu logradouro"
                 />
               </div>
@@ -444,12 +411,12 @@ export default function CreateVacancy() {
                   id="cidade"
                   label="Cidade"
                   value={
-                    profilePayload.perfilPessoal.enderecoCidade != null
-                      ? profilePayload.perfilPessoal.enderecoCidade
+                    createVacancyPayload.endereco.cidade != null
+                      ? createVacancyPayload.endereco.cidade
                       : endereco.cidade
                   }
                   onChange={(e) =>
-                    handlePerfilPessoalChange("enderecoCidade", e.target.value)
+                    handleEnderecoChange("cidade", e.target.value)
                   }
                   error="Cidade é obrigatório"
                   required={true}
@@ -460,12 +427,12 @@ export default function CreateVacancy() {
                   id="estado"
                   label="Estado"
                   value={
-                    profilePayload.perfilPessoal.enderecoEstado != null
-                      ? profilePayload.perfilPessoal.enderecoEstado
+                    createVacancyPayload.endereco.uf != null
+                      ? createVacancyPayload.endereco.uf
                       : endereco.estado
                   }
                   onChange={(e) =>
-                    handlePerfilPessoalChange("enderecoEstado", e.target.value)
+                    handleEnderecoChange("uf", e.target.value)
                   }
                   error="Estado é obrigatório"
                   required={true}
@@ -476,7 +443,7 @@ export default function CreateVacancy() {
             <br />
           </CustomPanel>
 
-          <ButtomBlue text_button="Salvar" onClick={() => handleProfile()} />
+          <ButtomBlue text_button="Salvar" onClick={() => handleCreateVacancy()} />
         </div>
       </div>
     </>

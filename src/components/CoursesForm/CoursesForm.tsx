@@ -2,7 +2,8 @@ import CustomCalendar from "../CustomCalendar/CustomCalendar";
 import CustomCheckbox from "../CustomCheckbox/CustomCheckbox";
 import CustomInputTextPrime from "../CustomInputTextPrime/CustomInputTextPrime";
 
-export interface Course {
+export interface CourseForm {
+  id: string;
   name: string;
   startDate: Date | null;
   endDate: Date | null;
@@ -10,16 +11,16 @@ export interface Course {
 }
 
 interface CourseFormProps {
-  courses: Course[];
-  setCourses: React.Dispatch<React.SetStateAction<Course[]>>;
+  courses: CourseForm[];
+  setCourses: React.Dispatch<React.SetStateAction<CourseForm[]>>;
 }
 
 export default function CoursesForm({courses, setCourses}: CourseFormProps) {
 
-  const handleChange = <T extends keyof Course>(
+  const handleChange = <T extends keyof CourseForm>(
     index: number,
     field: T,
-    value: Course[T]
+    value: CourseForm[T]
   ) => {
     const updated = [...courses];
     updated[index][field] = value;
@@ -35,6 +36,7 @@ export default function CoursesForm({courses, setCourses}: CourseFormProps) {
     setCourses([
       ...courses,
       {
+        id: "",
         name: "",
         startDate: null,
         endDate: null,

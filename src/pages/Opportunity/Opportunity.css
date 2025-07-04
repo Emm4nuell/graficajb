@@ -10,7 +10,7 @@
 .div-opportunities {
   display: flex;
   justify-content: space-between;
-  gap: 20px;
+  gap: 1rem;
   width: 100%;
   margin-top: 20px;
 }
@@ -107,12 +107,9 @@ span {
   color: var(--span-color);
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 1200px) {
   .list-opportunities {
     display: grid;
     grid-template-columns: 1fr; /* 1 coluna que ocupa toda largura */
-  }
-  .opportunities {
-    padding: 1px;
   }
 }

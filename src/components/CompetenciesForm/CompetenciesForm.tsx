@@ -8,14 +8,15 @@ import { useEffect } from "react";
 import { getCompetenciesOptions } from "../../services/competenciesService";
 import { useAuth } from "../../contexts/AuthContext";
 
-export interface Competency {
+export interface CompetencyForm {
   id: string;
+  competenciaId: string;
   level: number;
 }
 
 interface CompetenciesFormProps {
-  competencies: Competency[];
-  setCompetencies: React.Dispatch<React.SetStateAction<Competency[]>>;
+  competencies: CompetencyForm[];
+  setCompetencies: React.Dispatch<React.SetStateAction<CompetencyForm[]>>;
 }
 
 export default function CompetenciesForm({competencies, setCompetencies}: CompetenciesFormProps) {
@@ -23,8 +24,6 @@ export default function CompetenciesForm({competencies, setCompetencies}: Compet
   const [competencyOptions, setCompetencyOptions] = useState<
   { label: string; value: string }[]
   >([]);
-
-  console.log(competencies)
 
   const { token } = useAuth()
 
@@ -46,10 +45,10 @@ export default function CompetenciesForm({competencies, setCompetencies}: Compet
     { label: "5", value: 5 },
   ];
 
-  const handleChange = <T extends keyof Competency>(
+  const handleChange = <T extends keyof CompetencyForm>(
     index: number,
     field: T,
-    value: Competency[T]
+    value: CompetencyForm[T]
   ) => {
     const updated = [...competencies];
     updated[index][field] = value;
@@ -69,6 +68,7 @@ export default function CompetenciesForm({competencies, setCompetencies}: Compet
       ...competencies,
       {
         id: "",
+        competenciaId: "",
         level: 0,
       },
     ]);
@@ -96,13 +96,13 @@ export default function CompetenciesForm({competencies, setCompetencies}: Compet
             <CustomDropdown
               id={`competency-${index}`}
               label="Competência"
-              value={exp.id}
+              value={exp.competenciaId}
               options={competencyOptions}
               onChange={(e) => {
                 const selectedId = e.value;
 
                 const alreadyExists = competencies.some(
-                  (c, i) => c.id === selectedId && i !== index
+                  (c, i) => c.competenciaId === selectedId && i !== index
                 );
 
                 if (alreadyExists) {
@@ -110,7 +110,7 @@ export default function CompetenciesForm({competencies, setCompetencies}: Compet
                   return;
                 }
 
-                handleChange(index, "id", selectedId);
+                handleChange(index, "competenciaId", selectedId);
               }}
               placeholder="Selecione uma competência"
             />

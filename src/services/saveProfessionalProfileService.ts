@@ -1,8 +1,9 @@
 import { API_URL } from "./api";
-import { ProfilePayloadType } from "../types/ProfileType";
+import { ProfessionalProfilePayloadType } from "../types/ProfessionalProfileType";
+import { useAuth } from "../contexts/AuthContext";
 
-export const saveProfileService = async (data: ProfilePayloadType, token) => {
-  const response = await fetch(`${API_URL}/candidates/personal`, {
+export const saveProfessionalProfileService = async (data: ProfessionalProfilePayloadType, token) => {
+  const response = await fetch(`${API_URL}/candidates/professional`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -10,6 +11,12 @@ export const saveProfileService = async (data: ProfilePayloadType, token) => {
     },
     body: JSON.stringify(data),
   });
+
+  // if (response.status === 401) {
+  //   // Opcional: limpar storage, redirecionar
+  //   logout();
+  //   throw new Error("Sessão expirada");
+  // }
 
   if (!response.ok) {
     let errorMessage = "Erro desconhecido";

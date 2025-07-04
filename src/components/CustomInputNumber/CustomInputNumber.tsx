@@ -25,8 +25,6 @@ export default function CustomInputNumber({
 
   const isInvalid = required && touched && isEmpty;
 
-  console.log(isInvalid, required, touched, isEmpty)
-
   return (
     <div className="custom-input-number-container">
       {label && (

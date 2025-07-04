@@ -2,7 +2,8 @@ import CustomCalendar from "../CustomCalendar/CustomCalendar";
 import CustomCheckbox from "../CustomCheckbox/CustomCheckbox";
 import CustomInputTextPrime from "../CustomInputTextPrime/CustomInputTextPrime";
 
-export interface Experience {
+export interface ExperienceForm {
+  id: string,
   company: string;
   role: string;
   startDate: Date | null;
@@ -11,16 +12,16 @@ export interface Experience {
 }
 
 interface ExperiencesFormProps {
-  experiences: Experience[];
-  setExperiences: React.Dispatch<React.SetStateAction<Experience[]>>;
+  experiences: ExperienceForm[];
+  setExperiences: React.Dispatch<React.SetStateAction<ExperienceForm[]>>;
 }
 
 export default function ExperiencesForm({experiences, setExperiences}: ExperiencesFormProps) {
 
-  const handleChange = <T extends keyof Experience>(
+  const handleChange = <T extends keyof ExperienceForm>(
     index: number,
     field: T,
-    value: Experience[T]
+    value: ExperienceForm[T]
   ) => {
     const updated = [...experiences];
     updated[index][field] = value;
@@ -37,6 +38,7 @@ export default function ExperiencesForm({experiences, setExperiences}: Experienc
     setExperiences([
       ...experiences,
       {
+        id: "",
         company: "",
         role: "",
         startDate: null,

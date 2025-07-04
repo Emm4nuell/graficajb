@@ -16,7 +16,7 @@ import {
   defaultProfilePayload,
   validationProfilePayload,
 } from "../../types/ProfileType";
-import { savePerfilService } from "../../services/saveProfileService";
+import { saveProfileService } from "../../services/saveProfileService";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -99,7 +99,7 @@ export default function Profile() {
     try {
       validationProfilePayload.parse(profilePayload);
 
-      const res = await savePerfilService(profilePayload, token);
+      const res = await saveProfileService(profilePayload, token);
       login(token, profilePayload.userPessoal.nome, profilePayload.userPessoal.email)
       toast.success("Dados salvos com sucesso!");
       navigate("/overview");
@@ -108,12 +108,13 @@ export default function Profile() {
         const fieldErrors: Record<string, string> = {};
         error.errors.forEach((err) => {
           const path = err.path.join(".");
+          toast.error(err.message)
           fieldErrors[path] = err.message;
         });
 
         setValidationErrors(fieldErrors);
 
-        toast.error("Verifique os campos obrigatórios.");
+        // toast.error("Verifique os campos obrigatórios.");
         console.error("Erros de validação:", error);
         return;
       }
@@ -145,6 +146,11 @@ export default function Profile() {
         if (result) {
           setProfilePayload((prev) => ({
             ...prev,
+            userPessoal: {
+              ...prev.userPessoal,
+              telefone: result.telefone,
+              dataNascimento: new Date(result.dataNascimento)
+            },
             perfilPessoal: {
               classificacaoAfirmativa: result.classificacaoAfirmativa,
               corRaca: result.corRaca,

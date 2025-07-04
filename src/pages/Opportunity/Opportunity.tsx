@@ -16,6 +16,8 @@ import { opportunityService } from "../../services/opportunityService";
 import { useNavigate } from "react-router-dom";
 import { CustomFilter, defaultCustomerFilter } from "../../types/FilterType";
 import { keyof } from "zod/v4";
+import CustomDropdown from "../../components/CustomDropdown/CustomDropdown";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function OpportunityPage() {
   const navigator = useNavigate();
@@ -24,11 +26,13 @@ export default function OpportunityPage() {
   const [opportunities, setOpportunities] = useState<OpportunitieType[]>([
     defaultOpportunitie,
   ]);
+  const { token } = useAuth()
 
   const fetchOpportunities = async () => {
     try {
       const data = await opportunityService(
-        localStorage.getItem("token"),
+        // localStorage.getItem("token"),
+        token,
         filter
       );
 
@@ -36,6 +40,7 @@ export default function OpportunityPage() {
         toast.error("Nenhuma vaga encontrada com os filtros selecionados.");
       } else {
         setOpportunities(data);
+        console.log(opportunities)
       }
     } catch (error) {
       if (error.message.includes("401")) {
@@ -81,11 +86,11 @@ export default function OpportunityPage() {
               ))}
             </div>
             <div className="filter">
-              <h1 id="title">Filtros rápidos</h1>
+              <h1 id="title">Filtros</h1>
               <h2>Modelo de trabalho</h2>
               <CustomInputTextPrime
                 label="Título"
-                placeholder="Ex. Desenvolvedor"
+                placeholder="Ex. Desenvolvedor Pleno"
                 onChange={(e) => onchangerInput("titulo", e.target.value)}
               />
               <CustomInputTextPrime
@@ -95,6 +100,17 @@ export default function OpportunityPage() {
               />
               <h2>Local de trabalho</h2>
               <div className="select">
+                {/* <CustomDropdown
+                  id={"1"}
+                  label="Estado"
+                  value={filter.uf}
+                  options={estados}
+                  placeholder="Selecione o estado"
+                  onChange={(e) => {
+                    selectEstado(e.target.value);
+                  }}
+                /> */}
+
                 <CustomSelect
                   id="1"
                   label="Estado"
@@ -105,6 +121,21 @@ export default function OpportunityPage() {
                   }}
                   options={estados}
                 />
+
+                {/* <CustomDropdown
+                  id={"2"}
+                  label="Cidade"
+                  value={filter.localidade}
+                  options={cidades}
+                  placeholder="Selecione a cidade"
+                  onChange={(e) => {
+                    setFilter((prev) => ({
+                      ...prev,
+                      localidade: e.target.value,
+                    }));
+                  }}
+                /> */}
+
                 <CustomSelect
                   id="2"
                   label="Cidade"

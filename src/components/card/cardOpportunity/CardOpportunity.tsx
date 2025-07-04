@@ -1,6 +1,7 @@
 import { FaRegBookmark, FaLocationDot } from "react-icons/fa6";
 import "./CardOpportunity.css";
 import ButtomCard from "../../ButtomCard/ButtomCard";
+import { useNavigate } from "react-router-dom";
 
 type infoType = {
   title: string;
@@ -19,6 +20,9 @@ export default function CardOpportunity({
   topic,
   date,
 }: OpportunityType) {
+
+  const navigator = useNavigate()
+
   return (
     <div className="card">
       <div className="card-title">
@@ -57,11 +61,11 @@ export default function CardOpportunity({
             ))}
           </div>
         </div>
-        <FaRegBookmark className="icon icon-book" />
+        {/* <FaRegBookmark className="icon icon-book" /> */}
       </div>
       <div className="footer-card">
         <p>{date}</p>
-        <ButtomCard text_button={"Ver detalhes"} />
+        <ButtomCard text_button={"Ver detalhes"} onClick={() => {navigator("/detailvacancies")}}/>
       </div>
     </div>
   );

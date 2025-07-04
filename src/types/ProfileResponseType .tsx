@@ -5,6 +5,8 @@ export type ProfileResponseType  = {
   pronome: number;
   identidadeGenero: number;
   orientacaoSexual: number;
+  telefone: string;
+  dataNascimento: Date;
   sobreMim: string;
   createdAt: string;
   updatedAt: string;

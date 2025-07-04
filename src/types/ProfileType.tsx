@@ -51,7 +51,7 @@ export const defaultProfilePayload: ProfilePayloadType = {
 export const validationProfilePayload = z.object({
   idUsuario: z.string().uuid("ID inválido"),
   userPessoal: z.object({
-    nome: z.string().nonempty("O nome é obrigatório."),
+    nome: z.string().nonempty("O nome completo é obrigatório."),
     email: z.string().nonempty("O email é obrigatório.").email("O email é inválido."),
     telefone: z.string().min(8, "O telefone é obrigatório."),
     dataNascimento: z.date({

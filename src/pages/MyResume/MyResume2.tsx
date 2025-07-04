@@ -13,43 +13,136 @@ import ButtomBlue from "../../components/ButtomBlue/ButtomBlue";
 import { CompetencyForm } from "../../components/CompetenciesForm/CompetenciesForm";
 import { CourseForm } from "../../components/CoursesForm/CoursesForm";
 import { ExperienceForm } from "../../components/ExperiencesForm/ExperiencesForm";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useViaCep } from "../../hooks/useViaCep";
 import { useAuth } from "../../contexts/AuthContext";
 import InterestAreaForm, {
   InterestArea,
 } from "../../components/InterestAreaForm/InterestAreaForm";
-import { id } from "zod/v4/locales";
 import {
-  validationProfessionalProfile,
   ProfessionalProfilePayloadType,
+  validationProfessionalProfile,
+  Experience,Course,Competency,Formation
 } from "../../types/ProfessionalProfileType";
-import { saveProfessionalProfileService } from "../../services/saveProfessionalProfileService";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
-import { z } from "zod";
-import { getProfessionalProfile } from "../../services/getProfessionalProfile";
 
-export default function MyResumePage() {
+export default function MyResumePage2() {
   const { user, token } = useAuth();
-  const navigate = useNavigate();
-  const [textValueCurriculum, setTextValueCurriculum] = useState<string>("");
-  const [idProfessionalProfile, setIdProfessionalProfile] = useState<string>("");
-  const [idAcademic, setidAcademic] = useState<string>("");
-  const [degree, setDegree] = useState<string>("");
-  const [areaActivity, setAreaActivity] = useState<string>("");
-  const [dateInitialAreaActivity, setDateInitialAreaActivity] =
-    useState<Date | null>(null);
-  const [dateFinalAreaActivity, setDateFinalAreaActivity] =
-    useState<Date | null>(null);
-  const [completedAcademy, setCompletedAcademy] = useState<boolean>(false);
+  const [professionalProfilePayload, setProfessionalProfilePayload] = useState<ProfessionalProfilePayloadType>({
+    idUsuario: user?.id || "",
+    perfilProfissional: {
+      id: "",
+      curriculo: "",
+      experienciasProfissional: [],
+      areasInteresse: [],
+      formacaoAcademicas: [],
+      cursos: [],
+      competenciasCandidato: [],
+    },
+  });
+
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
   >({});
 
+  // Altera campos raiz
+  const handleRootChange = (
+    field: keyof ProfessionalProfilePayloadType,
+    value: string
+  ) => {
+    setProfessionalProfilePayload((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  // Altera campos diretos de perfilProfissional que sejam string
+  const handlePerfilProfissionalFieldChange = (
+    field: keyof Omit<
+      ProfessionalProfilePayloadType["perfilProfissional"],
+      | "experienciasProfissional"
+      | "areasInteresse"
+      | "formacaoAcademicas"
+      | "cursos"
+      | "competenciasCandidato"
+    >,
+    value: string
+  ) => {
+    setProfessionalProfilePayload((prev) => ({
+      ...prev,
+      perfilProfissional: {
+        ...prev.perfilProfissional,
+        [field]: value,
+      },
+    }));
+  };
+
+  // Atualiza o array de experiências
+  const handleExperiencesChange = (newExperiences: Experience[]) => {
+    setProfessionalProfilePayload((prev) => ({
+      ...prev,
+      perfilProfissional: {
+        ...prev.perfilProfissional,
+        experienciasProfissional: newExperiences,
+      },
+    }));
+  };
+
+  // Atualiza o array de áreas de interesse
+  const handleAreasInteresseChange = (newAreas: string[]) => {
+    setProfessionalProfilePayload((prev) => ({
+      ...prev,
+      perfilProfissional: {
+        ...prev.perfilProfissional,
+        areasInteresse: newAreas,
+      },
+    }));
+  };
+
+  // Atualiza o array de formações acadêmicas
+  const handleFormacoesChange = (newFormations: Formation[]) => {
+    setProfessionalProfilePayload((prev) => ({
+      ...prev,
+      perfilProfissional: {
+        ...prev.perfilProfissional,
+        formacaoAcademicas: newFormations,
+      },
+    }));
+  };
+
+  // Atualiza o array de cursos
+  const handleCursosChange = (newCourses: Course[]) => {
+    setProfessionalProfilePayload((prev) => ({
+      ...prev,
+      perfilProfissional: {
+        ...prev.perfilProfissional,
+        cursos: newCourses,
+      },
+    }));
+  };
+
+  // Atualiza o array de competências
+  const handleCompetenciasChange = (newCompetencias: Competency[]) => {
+    setProfessionalProfilePayload((prev) => ({
+      ...prev,
+      perfilProfissional: {
+        ...prev.perfilProfissional,
+        competenciasCandidato: newCompetencias,
+      },
+    }));
+  };
+
+  const [numero, setNumero] = useState("");
+  const [cep, setCep] = useState("");
+  const { endereco, fetchAddress, setEndereco } = useViaCep();
+  const [textValueCurriculum, setTextValueCurriculum] = useState<string>("");
+  const [textValueAboutMe, setTextValueAboutMe] = useState<string>("");
+  const [degree, setDegree] = useState<string>("");
+  const [areaActivity, setAreaActivity] = useState<string>("");
+  const [dateAreaActivity, setDateAreaActivity] = useState<Date | null>(null);
+  const [completedAcademy, setCompletedAcademy] = useState<boolean>(false);
+
   const [experiences, setExperiences] = useState<ExperienceForm[]>([
     {
-      id: "",
       company: "",
       role: "",
       startDate: null,
@@ -60,7 +153,6 @@ export default function MyResumePage() {
 
   const [course, setCourse] = useState<CourseForm[]>([
     {
-      id: "",
       name: "",
       startDate: null,
       endDate: null,
@@ -71,7 +163,6 @@ export default function MyResumePage() {
   const [competencies, setCompetencies] = useState<CompetencyForm[]>([
     {
       id: "",
-      competenciaId: "",
       level: 0,
     },
   ]);
@@ -117,154 +208,76 @@ export default function MyResumePage() {
     { label: "Outro", value: "OUT" },
   ];
 
-  const payload: ProfessionalProfilePayloadType = {
-    idUsuario: user?.id || "",
-    perfilProfissional: {
-      id: idProfessionalProfile,
+  const payload = {
+    idUsuario: "",
+    dataNascimento: "",
+    perfilPessoal: {
+      classificacaoAfirmativa: "",
+      corRaca: "",
+      pronome: "",
+      identidadeGenero: "",
+      orientacaoSexual: "",
+      sobreMim: textValueAboutMe,
+      enderecoBairro: endereco.bairro,
+      enderecoCEP: cep,
+      enderecoCidade: endereco.cidade,
+      enderecoEstado: endereco.estado,
+      enderecoNumero: numero,
+      enderecoRua: endereco.rua,
+    },
+    profissional: {
       curriculo: textValueCurriculum,
       experienciasProfissional: experiences.map((exp) => ({
-        id: exp.id || "",
         empresa: exp.company,
         posicao: exp.role,
-        dataInicio: exp.startDate ? exp.startDate.toISOString() : "",
-        dataFim: exp.endDate ? exp.endDate.toISOString() : "",
+        dataInicio: exp.startDate,
+        dataFim: exp.endDate,
         empregoAtual: exp.currentJob,
       })),
-      areasInteresse: interestArea.map((area) => area.id),
-      formacaoAcademicas: [
-        {
-          id: idAcademic,
-          grau: degree,
-          areaAtuacao: areaActivity,
-          dataInicio: dateInitialAreaActivity
-            ? dateInitialAreaActivity.toISOString()
-            : "",
-          dataConclusao: dateFinalAreaActivity
-            ? dateFinalAreaActivity.toISOString()
-            : "",
-          concluido: completedAcademy,
-          certificado: "",
-        },
-      ],
+      areasInteresse: interestArea,
+      formacaoAcademicas: {
+        grau: degree,
+        areaAtuacao: areaActivity,
+        dataConclusao: dateAreaActivity,
+        concluido: completedAcademy,
+        certificado: "",
+      },
       cursos: course.map((c) => ({
-        id: c.id || "",
         nomeCurso: c.name,
-        dataInicio: c.startDate ? c.startDate.toISOString() : "",
-        dataConclusao: c.endDate ? c.endDate.toISOString() : "",
+        dataConclusao: c.endDate,
         concluido: c.completed,
         certificado: "",
         vagaId: "",
       })),
       competenciasCandidato: competencies.map((c) => ({
-        id: c.id || "",
-        competenciaId: c.competenciaId,
+        competenciaId: c.id,
         nivel: c.level,
-        competenciaId1: null, // Aqui não pode ser null!
+        competenciaId1: null,
       })),
     },
   };
 
-  const handleProfessionalProfile = async () => {
-    console.log(payload);
-
-    // Limpa erros antigos
-    setValidationErrors({});
-
+  const savePerfil = async () => {
     try {
-      validationProfessionalProfile.parse(payload);
+      const response = await fetch("https://sua.api/endpoint", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(payload),
+      });
 
-      const res = await saveProfessionalProfileService(payload, token);
-      toast.success("Dados salvos com sucesso!");
-      navigate("/overview");
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        const fieldErrors: Record<string, string> = {};
-        error.errors.forEach((err) => {
-          const path = err.path.join(".");
-          toast.error(err.message)
-          fieldErrors[path] = err.message;
-        });
-
-        setValidationErrors(fieldErrors);
-
-        // toast.error("Verifique os campos obrigatórios.");
-        console.error("Erros de validação:", error);
-        return;
+      if (!response.ok) {
+        throw new Error("Erro ao salvar dados.");
       }
 
-      toast.error("Ocorreu um erro ao salvar.");
-      console.error("Erro no envio:", error);
+      const data = await response.json();
+      console.log("Salvo com sucesso:", data);
+    } catch (error) {
+      console.error(error);
     }
   };
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      const result = await getProfessionalProfile(token || "", user?.id || "");
-      if (result) {
-        console.log(result);
-        setIdProfessionalProfile(result.id)
-        // Currículo
-        setTextValueCurriculum(result.curriculo);
-
-        // Experiências
-        setExperiences(
-          result.experienciasProfissional.map((exp) => ({
-            id: exp.id,
-            company: exp.empresa,
-            role: exp.posicao,
-            startDate: exp.dataInicio ? new Date(exp.dataInicio) : null,
-            endDate: exp.dataFim ? new Date(exp.dataFim) : null,
-            currentJob: exp.empregoAtual,
-          }))
-        );
-
-        // Áreas de interesse
-        setInterestArea(
-          result.areasInteresse.map((id) => ({
-            id: id,
-            name: "", // Preencha se tiver mais dados disponíveis
-          }))
-        );
-
-        // Formação acadêmica
-        if (result.formacaoAcademicas.length > 0) {
-          const formacao = result.formacaoAcademicas[0];
-          setidAcademic(formacao.id)
-          setDegree(formacao.grau);
-          setAreaActivity(formacao.areaAtuacao);
-          setDateInitialAreaActivity(
-            formacao.dataInicio ? new Date(formacao.dataInicio) : null
-          );
-          setDateFinalAreaActivity(
-            formacao.dataConclusao ? new Date(formacao.dataConclusao) : null
-          );
-          setCompletedAcademy(formacao.concluido);
-        }
-
-        // Cursos
-        setCourse(
-          result.cursos.map((c) => ({
-            id: c.id,
-            name: c.nomeCurso,
-            startDate: c.dataInicio ? new Date(c.dataInicio) : null,
-            endDate: c.dataConclusao ? new Date(c.dataConclusao) : null,
-            completed: c.concluido,
-          }))
-        );
-
-        // Competências
-        setCompetencies(
-          result.competenciasCandidato.map((c) => ({
-            id: c.id,
-            competenciaId: c.competenciaId,
-            level: c.nivel,
-          }))
-        );
-      }
-    };
-
-    fetchProfile();
-  }, []);
 
   return (
     <>
@@ -287,11 +300,15 @@ export default function MyResumePage() {
             </p>
 
             <CustomTextArea
-              value={textValueCurriculum}
-              onChange={(e) => setTextValueCurriculum(e.target.value)}
+              value={professionalProfilePayload.perfilProfissional.curriculo}
+              onChange={(e) =>
+                handlePerfilProfissionalFieldChange("curriculo", e.target.value)
+              }              
               placeholder="Digite seu texto aqui..."
-              // error={textValueCurriculum == "" ? "Este campo é obrigatório" : undefined}
+              error={"Currículo é obrigatório"}
+              required={true}
             />
+            
             <br />
 
             <span className="title-panel">Experiência</span>
@@ -339,24 +356,10 @@ export default function MyResumePage() {
                 style={{ display: "flex", flexDirection: "row", gap: "1.6rem" }}
               >
                 <CustomCalendar
-                  id={"dataInicialAcademic"}
-                  label="Data de Início"
-                  value={dateInitialAreaActivity}
-                  onChange={(e) => setDateInitialAreaActivity(e.value as Date)}
-                  placeholder="Selecione uma data"
-                  disabled={completedAcademy}
-                  showIcon
-                />
-
-                <CustomCalendar
                   id={"dataFimAcademic"}
-                  label={
-                    completedAcademy
-                      ? "Previsão de Conclusão"
-                      : "Data de Conclusão"
-                  }
-                  value={dateFinalAreaActivity}
-                  onChange={(e) => setDateFinalAreaActivity(e.value as Date)}
+                  label="Data Fim"
+                  value={dateAreaActivity}
+                  onChange={(e) => setDateAreaActivity(e.value as Date)}
                   placeholder="Selecione uma data"
                   disabled={completedAcademy}
                   showIcon
@@ -399,10 +402,7 @@ export default function MyResumePage() {
             />
           </CustomPanel>
 
-          <ButtomBlue
-            text_button="Salvar"
-            onClick={() => handleProfessionalProfile()}
-          />
+          <ButtomBlue text_button="Salvar" onClick={() => savePerfil()} />
         </div>
       </div>
     </>

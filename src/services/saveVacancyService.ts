@@ -1,8 +1,8 @@
 import { API_URL } from "./api";
-import { ProfilePayloadType } from "../types/ProfileType";
+import { CreateVacancyType } from "../types/CreateVacancyType";
 
-export const saveProfileService = async (data: ProfilePayloadType, token) => {
-  const response = await fetch(`${API_URL}/candidates/personal`, {
+export const saveVacancyService = async (data: CreateVacancyType, token) => {
+  const response = await fetch(`${API_URL}/vacancies/publish`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,7 +21,6 @@ export const saveProfileService = async (data: ProfilePayloadType, token) => {
         const errorJson = JSON.parse(text);
         errorMessage = errorJson.message || errorMessage;
       } catch {
-        // Se não for JSON, usa o texto mesmo
         errorMessage = text;
       }
     }
@@ -29,7 +28,6 @@ export const saveProfileService = async (data: ProfilePayloadType, token) => {
     throw new Error(errorMessage);
   }
   
-  // Retorna o JSON só se existir
   const text = await response.text();
   return text ? JSON.parse(text) : {};
 };
