@@ -5,6 +5,7 @@ import CustomSelect from "../../components/CustomSelect/CustomSelect";
 import CustomInputTextPrime from "../../components/CustomInputTextPrime/CustomInputTextPrime";
 import CustomButtom from "../../components/CustomButtom/CustomButtom";
 import { FaFilter } from "react-icons/fa6";
+import { toast } from "react-toastify";
 import {
   defaultOpportunitie,
   OpportunitieType,
@@ -30,7 +31,12 @@ export default function OpportunityPage() {
         localStorage.getItem("token"),
         filter
       );
-      setOpportunities(data);
+
+      if (data.length === 0) {
+        toast.error("Nenhuma vaga encontrada com os filtros selecionados.");
+      } else {
+        setOpportunities(data);
+      }
     } catch (error) {
       if (error.message.includes("401")) {
         localStorage.removeItem("token");
