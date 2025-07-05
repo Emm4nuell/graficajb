@@ -31,7 +31,7 @@ export default function OpportunityPage() {
       const data = await opportunityService(filter);
 
       if (data.length === 0) {
-        toast.error("Nenhuma vaga encontrada com os filtros selecionados.");
+        toast.warning("Nenhuma vaga encontrada.");
       } else {
         setOpportunities(data);
       }
