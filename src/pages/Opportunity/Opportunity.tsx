@@ -15,8 +15,6 @@ import { useLocalidade } from "../../hooks/userLocalidades";
 import { opportunityService } from "../../services/opportunityService";
 import { useNavigate } from "react-router-dom";
 import { CustomFilter, defaultCustomerFilter } from "../../types/FilterType";
-import { keyof } from "zod/v4";
-import CustomDropdown from "../../components/CustomDropdown/CustomDropdown";
 import { useAuth } from "../../contexts/AuthContext";
 
 export default function OpportunityPage() {
@@ -26,25 +24,22 @@ export default function OpportunityPage() {
   const [opportunities, setOpportunities] = useState<OpportunitieType[]>([
     defaultOpportunitie,
   ]);
-  const { token } = useAuth()
+  const { token } = useAuth();
 
   const fetchOpportunities = async () => {
     try {
-      const data = await opportunityService(
-        // localStorage.getItem("token"),
-        token,
-        filter
-      );
+      const data = await opportunityService(filter);
 
       if (data.length === 0) {
         toast.error("Nenhuma vaga encontrada com os filtros selecionados.");
       } else {
         setOpportunities(data);
-        console.log(opportunities)
+        console.log(opportunities);
       }
     } catch (error) {
       if (error.message.includes("401")) {
         localStorage.removeItem("token");
+        console.log("Erro acionado com sucesso");
         navigator("/signin");
       }
     }
@@ -78,6 +73,7 @@ export default function OpportunityPage() {
               {opportunities.map((value, index) => (
                 <CardOpportunity
                   key={index}
+                  id={value.id}
                   title={value.titulo}
                   subtitle={`${value.endereco.cidade} - ${value.endereco.uf}`}
                   topic={[value.regimeTrabalho]}
@@ -100,17 +96,6 @@ export default function OpportunityPage() {
               />
               <h2>Local de trabalho</h2>
               <div className="select">
-                {/* <CustomDropdown
-                  id={"1"}
-                  label="Estado"
-                  value={filter.uf}
-                  options={estados}
-                  placeholder="Selecione o estado"
-                  onChange={(e) => {
-                    selectEstado(e.target.value);
-                  }}
-                /> */}
-
                 <CustomSelect
                   id="1"
                   label="Estado"
@@ -121,21 +106,6 @@ export default function OpportunityPage() {
                   }}
                   options={estados}
                 />
-
-                {/* <CustomDropdown
-                  id={"2"}
-                  label="Cidade"
-                  value={filter.localidade}
-                  options={cidades}
-                  placeholder="Selecione a cidade"
-                  onChange={(e) => {
-                    setFilter((prev) => ({
-                      ...prev,
-                      localidade: e.target.value,
-                    }));
-                  }}
-                /> */}
-
                 <CustomSelect
                   id="2"
                   label="Cidade"

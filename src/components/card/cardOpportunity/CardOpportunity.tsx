@@ -8,6 +8,7 @@ type infoType = {
 };
 
 type OpportunityType = {
+  id: string;
   title: string;
   subtitle: string;
   topic: string[];
@@ -15,13 +16,13 @@ type OpportunityType = {
 };
 
 export default function CardOpportunity({
+  id,
   title,
   subtitle,
   topic,
   date,
 }: OpportunityType) {
-
-  const navigator = useNavigate()
+  const navigator = useNavigate();
 
   return (
     <div className="card">
@@ -65,7 +66,12 @@ export default function CardOpportunity({
       </div>
       <div className="footer-card">
         <p>{date}</p>
-        <ButtomCard text_button={"Ver detalhes"} onClick={() => {navigator("/detailvacancies")}}/>
+        <ButtomCard
+          text_button={"Ver detalhes"}
+          onClick={() => {
+            navigator(`/detailvacancies/${id}`);
+          }}
+        />
       </div>
     </div>
   );

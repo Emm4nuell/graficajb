@@ -76,6 +76,7 @@ const router = createBrowserRouter([
   { path: "signin", element: <SignInPage /> },
   { path: "overview", element: <OverviewPage /> },
   { path: "opportunity", element: <OpportunityPage /> },
+  { path: "detailvacancies/:id", element: <DetailVacancies /> },
   {
     element: <PrivateRoute />, // <- tudo abaixo aqui é privado
     children: [
@@ -84,7 +85,7 @@ const router = createBrowserRouter([
       { path: "myapplications", element: <MyApplications /> },
       { path: "myvacancies", element: <MyVacancies /> },
       { path: "createvacancy", element: <CreateVacancy /> },
-      { path: "detailvacancies", element: <DetailVacancies /> },
+      { path: "detailvacancies/:id", element: <DetailVacancies /> },
     ],
   },
 ]);

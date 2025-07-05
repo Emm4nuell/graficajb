@@ -2,6 +2,10 @@
   display: flex;
 }
 
+.buttom-filter button {
+  border: none;
+}
+
 .buttom-filter > button {
   width: 200px;
   height: 2.5rem;

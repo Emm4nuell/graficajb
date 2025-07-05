@@ -16,7 +16,7 @@ const buildQueryString = (filter: CustomFilter) => {
   return params.toString();
 };
 
-export const opportunityService = async (token: any, filter: CustomFilter) => {
+export const opportunityService = async (filter: CustomFilter) => {
   try {
     console.log(`${API_URL}/vacancies/list?${buildQueryString(filter)}`);
     const response = await fetch(
@@ -25,7 +25,6 @@ export const opportunityService = async (token: any, filter: CustomFilter) => {
         method: "GET",
         headers: {
           "Content-type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
       }
     );
