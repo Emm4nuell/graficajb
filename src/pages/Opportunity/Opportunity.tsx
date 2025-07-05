@@ -31,15 +31,13 @@ export default function OpportunityPage() {
       const data = await opportunityService(filter);
 
       if (data.length === 0) {
-        toast.error("Nenhuma vaga encontrada com os filtros selecionados.");
+        toast.warning("Nenhuma vaga encontrada.");
       } else {
         setOpportunities(data);
-        console.log(opportunities);
       }
     } catch (error) {
       if (error.message.includes("401")) {
         localStorage.removeItem("token");
-        console.log("Erro acionado com sucesso");
         navigator("/signin");
       }
     }
