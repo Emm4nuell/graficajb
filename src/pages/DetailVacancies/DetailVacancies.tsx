@@ -19,6 +19,7 @@ import { CustomerApplication } from "../../types/ApplicationType";
 import { applicationsservice } from "../../services/MyApplicationsService";
 import CandidacyCard from "../../components/CandidacyCard/CandidacyCard";
 import { getCandidaciesByVacancy } from "../../services/getCandidaciesByVacancy";
+import { toast } from "react-toastify";
 
 export default function DetailVacancies() {
   const { user, token, perfilCandidato, isAuthenticated } = useAuth();
@@ -59,17 +60,15 @@ export default function DetailVacancies() {
     }
   };
 
-  const onchangeApplication = () => {
-    setApplication({ candidateId: user?.id!, vagaId: id! });
-  };
-
   const fetchMyApplication = async () => {
-    onchangeApplication();
     try {
-      if (application) {
-        await applicationsservice(token!, application);
-        navigate("/myapplications");
-      }
+      const newApplication = {
+        candidateId: user?.id!,
+        vagaId: id!,
+      };
+      await applicationsservice(token!, newApplication!);
+      toast.success("Candidatura realizada com sucesso.");
+      navigate("/myapplications");
     } catch (error) {
       if (error.message.includes("401")) {
         localStorage.removeItem("token");
