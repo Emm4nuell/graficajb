@@ -29,10 +29,7 @@ export default function MyApplications() {
 
   const fetchApplications = async () => {
     try {
-      const data = await myApplicationsService(
-        token,
-        user?.id || "",
-      );
+      const data = await myApplicationsService(token, user?.id || "");
 
       if (data.length === 0) {
         toast.error("Nenhuma vaga encontrada com os filtros selecionados.");

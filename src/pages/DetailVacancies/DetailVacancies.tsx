@@ -14,9 +14,13 @@ import CustomButtom from "../../components/CustomButtom/CustomButtom";
 import { useAuth } from "../../contexts/AuthContext";
 import EditVacancy from "../EditVacancy/EditVacancy";
 import { useNavigate } from "react-router-dom";
+import { myApplicationsService } from "../../services/getMyApplicationsService";
+import { CustomerApplication } from "../../types/ApplicationType";
+import { applicationsservice } from "../../services/MyApplicationsService";
 
 export default function DetailVacancies() {
   const { user, token, perfilCandidato, isAuthenticated } = useAuth();
+  const [application, setApplication] = useState<CustomerApplication>();
   const navigate = useNavigate();
   const { id } = useParams();
   const [filter, setFilter] = useState<CustomFilter>(defaultCustomerFilter);
@@ -44,6 +48,25 @@ export default function DetailVacancies() {
       const data = await opportunityService(filter);
 
       setOpportunities(data);
+    } catch (error) {
+      if (error.message.includes("401")) {
+        localStorage.removeItem("token");
+        console.log("Erro acionado com sucesso");
+      }
+    }
+  };
+
+  const onchangeApplication = () => {
+    setApplication({ candidateId: user?.id!, vagaId: id! });
+  };
+
+  const fetchMyApplication = async () => {
+    onchangeApplication();
+    try {
+      if (application) {
+        await applicationsservice(token!, application);
+        navigate("/myapplications");
+      }
     } catch (error) {
       if (error.message.includes("401")) {
         localStorage.removeItem("token");
@@ -172,7 +195,9 @@ export default function DetailVacancies() {
                 <CustomButtom
                   color="#DF2A8C"
                   text="Candidatar-se"
-                  onClick={() => {}}
+                  onClick={() => {
+                    fetchMyApplication();
+                  }}
                 />
                 <CustomButtom
                   color="#616161"
@@ -195,7 +220,7 @@ export default function DetailVacancies() {
                 Para se candidatar é necessário ter uma conta.{" "}
                 <Link to={"/register"}>Cadastre-se</Link>
               </span>
-              <br />{" "}
+              <br />
             </div>
           )}
 
