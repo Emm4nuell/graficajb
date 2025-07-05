@@ -18,7 +18,6 @@ export const getCandidaciesByVacancy = async (
     }
 
     const data: string[] = await response.json();
-    console.log(data)
     return data;
   } catch (error) {
     console.error("Erro ao buscar perfil:", error);

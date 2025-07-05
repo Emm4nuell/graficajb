@@ -92,7 +92,6 @@ export default function Profile() {
   ];
 
   const handleProfile = async () => {
-    console.log(profilePayload);
 
     // Limpa erros antigos
     setValidationErrors({});

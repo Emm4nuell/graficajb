@@ -34,12 +34,10 @@ export default function OpportunityPage() {
         toast.error("Nenhuma vaga encontrada com os filtros selecionados.");
       } else {
         setOpportunities(data);
-        console.log(opportunities);
       }
     } catch (error) {
       if (error.message.includes("401")) {
         localStorage.removeItem("token");
-        console.log("Erro acionado com sucesso");
         navigator("/signin");
       }
     }

@@ -30,7 +30,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
-    console.log(storedToken);
     if (storedToken) {
       try {
         const decoded = jwtDecode<TokenPayload>(storedToken);
@@ -39,15 +38,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           : setPerfilCandidato(false);
         const currentTime = Date.now() / 1000;
         if (decoded.exp < currentTime) {
-          console.log("Expirou");
-          console.log(decoded.exp);
           logout();
         } else {
           setToken(storedToken);
           setUser(decoded);
         }
       } catch {
-        console.log("Deu erro");
         logout();
       }
     }

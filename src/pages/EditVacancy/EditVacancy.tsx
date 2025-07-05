@@ -88,13 +88,11 @@ export default function EditVacancy() {
   ];
 
   const handleEditVacancy = async () => {
-    console.log(editVacancyPayload);
 
     setValidationErrors({});
 
     try {
       validationEditVacancyPayload.parse(editVacancyPayload);
-      console.log(editVacancyPayload, token, id)
       const res = await editVacancyService(editVacancyPayload, token || "", id || "");
 
       toast.success("Vaga editada com sucesso!");
@@ -123,7 +121,6 @@ export default function EditVacancy() {
   useEffect(() => {
     const fetchVacancy = async () => {
       const result = await getVacancyById(
-        token || "",
         id || ""
       ); 
       if (result) {

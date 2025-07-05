@@ -15,7 +15,6 @@ export function useLocalidade() {
         );
         const data = await response.json();
         setCidade(data);
-        console.log(data);
       } else {
         const response = await fetch(
           "https://servicodados.ibge.gov.br/api/v1/localidades/estados"

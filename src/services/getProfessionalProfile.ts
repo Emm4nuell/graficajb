@@ -19,7 +19,6 @@ export const getProfessionalProfile = async (
     }
 
     const data: ProfessionalProfileResponse = await response.json();
-    console.log(data)
     return data;
   } catch (error) {
     console.error("Erro ao buscar perfil:", error);

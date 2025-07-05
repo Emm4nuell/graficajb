@@ -26,12 +26,21 @@ import {
 } from "../../types/ProfessionalProfileType";
 import { saveProfessionalProfileService } from "../../services/saveProfessionalProfileService";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import { getProfessionalProfile } from "../../services/getProfessionalProfile";
 import CustomButtom from "../../components/CustomButtom/CustomButtom";
+import { getCandidaciesByVacancy } from "../../services/getCandidaciesByVacancy";
+import { getProfile } from "../../services/getProfile";
+import { ProfileResponseType } from "../../types/ProfileResponseType ";
+import { defaultGetVacancy, GetVacancyType } from "../../types/GetVacancyType";
+import { getVacancyById } from "../../services/getVacancyById";
 
 export default function CandidaciesPage() {
+  const [detalhes, setDetalhes] = useState<(ProfileResponseType | null)[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [vacancy, setVacancy] = useState<GetVacancyType>(defaultGetVacancy);
+  const { id } = useParams();
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const [textValueCurriculum, setTextValueCurriculum] = useState<string>("");
@@ -48,6 +57,22 @@ export default function CandidaciesPage() {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
   >({});
+
+  const corRacaMap: Record<number, string> = {
+    1: "Branca",
+    2: "Preta",
+    3: "Parda",
+    4: "Amarela",
+    5: "Indígena",
+    6: "Não desejo declarar",
+    7: "Outra",
+  };
+
+  const sexualOrientationMap: Record<number, string> = {
+    1: "Masculino",
+    2: "Feminino",
+    3: "Outro",
+  };
 
   const [experiences, setExperiences] = useState<ExperienceForm[]>([
     {
@@ -265,164 +290,112 @@ export default function CandidaciesPage() {
       }
     };
 
+    const fetchDetalhes = async () => {
+      setLoading(true);
+
+      try {
+        // 1) Buscar lista de IDs
+        const ids = await getCandidaciesByVacancy(token || "", id || "");
+        // Ex.: ["id1", "id2", ...]
+
+        if (!ids || ids.length === 0) {
+          setDetalhes([]);
+          setLoading(false);
+          return;
+        }
+
+        // 2) Criar array de Promises para buscar detalhes
+        const detalhesData = await Promise.all(
+          ids.map(async (id) => {
+            try {
+              const res = await getProfile(token || "", id);
+              return res;
+            } catch (error) {
+              console.error(`Erro ao buscar candidato ${id}:`, error);
+              return null;
+            }
+          })
+        );
+
+        // 3) Filtrar nulls
+        const detalhesValidos = detalhesData.filter(
+          (d): d is ProfileResponseType => d !== null
+        );
+
+        // 4) Salvar no state
+        setDetalhes(detalhesValidos);
+        console.log(detalhes);
+      } catch (error) {
+        console.error("Erro geral ao carregar detalhes:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchDetailVacancie = async () => {
+      try {
+        if (id) {
+          const data = await getVacancyById(id);
+          if (data) {
+            setVacancy(data);
+          } else {
+            console.error("Dados da vaga vieram nulos");
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao buscar vaga:", error);
+      }
+    };
+
     fetchProfile();
+    fetchDetalhes();
+    fetchDetailVacancie();
   }, []);
 
   return (
     <>
       <Header />
-      <div className="my-resume">
-        <div className="info-my-resume">
-          <h1>Meu Currículo</h1>
+      <div className="candidacies">
+        <div className="info-candidacies">
+          <h1>Candidaturas</h1>
           <p>
-            Aqui estão seus dados pessoais, profissionais, acadêmicos e suas
-            habilidades
+            <b>Vaga:</b> {vacancy.titulo}
           </p>
         </div>
 
-        <div className="main-my-resume">
-          <CustomPanel header="Dados Profissionais" toggleable>
-            <span className="title-panel">Currículo</span>
-            <p className="p-panel">
-              Insira uma descrição sobre seu currículo e suas experiências
-              profissionais
-            </p>
-
-            <CustomTextArea
-              value={textValueCurriculum}
-              onChange={(e) => setTextValueCurriculum(e.target.value)}
-              placeholder="Digite seu texto aqui..."
-              // error={textValueCurriculum == "" ? "Este campo é obrigatório" : undefined}
-            />
-            <br />
-
-            <span className="title-panel">Experiência</span>
-            <p className="p-panel">
-              Essas informações serão usadas em todas as candidaturas
-            </p>
-            <ExperiencesForm
-              experiences={experiences}
-              setExperiences={setExperiences}
-            />
-          </CustomPanel>
-
-          <CustomPanel header="Dados Acadêmicos" toggleable>
-            <span className="title-panel">Formação Acadêmica</span>
-            <p className="p-panel">
-              Essas informações serão usadas em todas as candidaturas
-            </p>
-
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "1rem" }}
-            >
-              <div
-                style={{ display: "flex", flexDirection: "row", gap: "1.6rem" }}
-              >
-                <CustomDropdown
-                  id="degree"
-                  label="Grau de Formação"
-                  value={degree}
-                  options={degreeOptions}
-                  onChange={(e) => setDegree(e.value)}
-                  placeholder="Selecione seu grau de formação"
-                />
-
-                <CustomDropdown
-                  id="areaActivity"
-                  label="Área de Atuação"
-                  value={areaActivity}
-                  options={areaActivityOptions}
-                  onChange={(e) => setAreaActivity(e.value)}
-                  placeholder="Selecione sua área de atuação"
-                />
-              </div>
-
-              <div
-                style={{ display: "flex", flexDirection: "row", gap: "1.6rem" }}
-              >
-                <CustomCalendar
-                  id={"dataInicialAcademic"}
-                  label="Data de Início"
-                  value={dateInitialAreaActivity}
-                  onChange={(e) => setDateInitialAreaActivity(e.value as Date)}
-                  placeholder="Selecione uma data"
-                  disabled={completedAcademy}
-                  showIcon
-                />
-
-                <CustomCalendar
-                  id={"dataFimAcademic"}
-                  label={
-                    completedAcademy
-                      ? "Previsão de Conclusão"
-                      : "Data de Conclusão"
-                  }
-                  value={dateFinalAreaActivity}
-                  onChange={(e) => setDateFinalAreaActivity(e.value as Date)}
-                  placeholder="Selecione uma data"
-                  disabled={completedAcademy}
-                  showIcon
-                />
-              </div>
-              <CustomCheckbox
-                id={"notCompleted"}
-                label="Não Concluído"
-                checked={completedAcademy}
-                onChange={() => setCompletedAcademy(!completedAcademy)}
-              />
-              <br />
-            </div>
-
-            <span className="title-panel">Cursos</span>
-            <p className="p-panel">
-              Essas informações serão usadas em todas as candidaturas
-            </p>
-
-            <CoursesForm courses={course} setCourses={setCourse} />
-          </CustomPanel>
-          <CustomPanel header="Habilidades" toggleable>
-            <span className="title-panel">Competências</span>
-            <p className="p-panel">
-              Essas informações serão usadas em todas as candidaturas
-            </p>
-            <CompetenciesForm
-              competencies={competencies}
-              setCompetencies={setCompetencies}
-            />
-            <br />
-
-            <span className="title-panel">Áreas de Interesse</span>
-            <p className="p-panel">
-              Essas informações serão usadas em todas as candidaturas
-            </p>
-            <InterestAreaForm
-              interestArea={interestArea}
-              setInterestArea={setInterestArea}
-            />
-          </CustomPanel>
-
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              gap: "1.6rem",
-              justifyContent: "flex-end",
-            }}
-          >
-            <CustomButtom
-              text="Cancelar"
-              color="#929090"
-              onClick={() => {
-                navigate("/overview");
-              }}
-            />
-
-            <CustomButtom
-              text="Salvar"
-              color="#00A8EA"
-              onClick={() => handleProfessionalProfile()}
-            />
-          </div>
+        <div className="main-candidacies">
+          {loading ? (
+            <h4>Carregando dados...</h4>
+          ) : (
+            detalhes.map((e) => (
+              <>
+                <h4>Candidato: {e?.id}</h4>
+                <p>
+                  <strong>Cor/Raça:</strong> {corRacaMap[e?.corRaca || 0]}
+                </p>
+                <p>
+                  <strong>Orientação Sexual:</strong>{" "}
+                  {sexualOrientationMap[e?.orientacaoSexual || 0]}
+                </p>
+                <p>
+                  <strong>Telefone:</strong> {e?.telefone}
+                </p>
+                <p>
+                  <strong>Data de Nascimento:</strong>{" "}
+                  {e?.dataNascimento
+                    ? new Date(e.dataNascimento).toLocaleDateString()
+                    : "Não informado"}
+                </p>
+                <p>
+                  <strong>Sobre Mim:</strong> {e?.sobreMim}
+                </p>
+                <p>
+                  <strong>Endereço:</strong>{" "}
+                  {`${e?.enderecoRua}, ${e?.enderecoNumero}, ${e?.enderecoBairro}, ${e?.enderecoCidade} - ${e?.enderecoEstado}, CEP ${e?.enderecoCEP}`}
+                </p>
+              </>
+            ))
+          )}
         </div>
       </div>
     </>

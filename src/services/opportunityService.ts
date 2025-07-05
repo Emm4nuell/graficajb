@@ -18,7 +18,6 @@ const buildQueryString = (filter: CustomFilter) => {
 
 export const opportunityService = async (filter: CustomFilter) => {
   try {
-    console.log(`${API_URL}/vacancies/list?${buildQueryString(filter)}`);
     const response = await fetch(
       `${API_URL}/vacancies/list?${buildQueryString(filter)}`,
       {

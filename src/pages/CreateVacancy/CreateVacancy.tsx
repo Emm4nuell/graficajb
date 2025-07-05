@@ -81,8 +81,7 @@ export default function CreateVacancy() {
   ];
 
   const handleCreateVacancy = async () => {
-    console.log(createVacancyPayload);
-
+    
     // Limpa erros antigos
     setValidationErrors({});
 

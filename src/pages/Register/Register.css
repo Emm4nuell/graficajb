@@ -59,7 +59,7 @@ section#section-register {
 
 
 @media screen and (max-width: 768px) {
-  .box-register{
+  .box-register {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -67,7 +67,32 @@ section#section-register {
     margin: 0 auto;
   }
 
-  .logo-jb{
+  .logo-jb {
     display: none;
+  }
+
+  #info-register span {
+    font-size: 1rem;
+    color: #fff;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1rem;
+    letter-spacing: -0.015rem;
+  }
+
+  #info-register h1 {
+    color: #fff;
+    font-size: 2rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1rem;
+    letter-spacing: -0.07rem;
+  }
+
+  #info-register p {
+    font-size: 1rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 1rem;
   }
 }

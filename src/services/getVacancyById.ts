@@ -2,7 +2,6 @@ import { API_URL } from "./api";
 import { GetVacancyType } from "../types/GetVacancyType";
 
 export const getVacancyById = async (
-  token: string,
   id: string
 ): Promise<GetVacancyType | null> => {
   try {
@@ -10,7 +9,6 @@ export const getVacancyById = async (
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -19,7 +17,6 @@ export const getVacancyById = async (
     }
 
     const data: GetVacancyType = await response.json();
-    console.log(data)
     return data;
   } catch (error) {
     console.error("Erro ao buscar perfil:", error);

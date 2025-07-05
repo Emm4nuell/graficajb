@@ -14,6 +14,5 @@ export const createUser = async (data: RegisterType) => {
     console.warn(result)
     throw result || "Erro na API";
   }
-  console.log("Resposta da API:", result);
   return result;
 };

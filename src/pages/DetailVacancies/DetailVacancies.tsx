@@ -38,7 +38,6 @@ export default function DetailVacancies() {
       if (id) {
         const data = await detailsVacanciesServices(id);
         setOpportunitie(data);
-        console.log(data);
       }
     } catch (error) {
       console.error("Erro ao buscar vaga:", error);
@@ -216,7 +215,7 @@ export default function DetailVacancies() {
               </div>
             ) : (
               <div className="candidacy-card-details">
-                <CandidacyCard total={candidacies} />
+                <CandidacyCard total={candidacies} idVacancy={id || ""}/>
 
                 <CustomButtom
                   color="#DF2A8C"

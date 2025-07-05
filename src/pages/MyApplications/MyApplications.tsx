@@ -35,7 +35,6 @@ export default function MyApplications() {
         toast.error("Nenhuma vaga encontrada com os filtros selecionados.");
       } else {
         setOpportunities(data);
-        console.log(opportunities);
       }
     } catch (error) {
       if (error.message.includes("401")) {
@@ -79,6 +78,7 @@ export default function MyApplications() {
             <div className="list-applications">
               {opportunities.map((value, index) => (
                 <CardOpportunity
+                  id=""
                   key={index}
                   title={value.titulo}
                   subtitle={`${value.endereco.cidade} - ${value.endereco.uf}`}

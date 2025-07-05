@@ -167,7 +167,6 @@ export default function MyResumePage() {
   };
 
   const handleProfessionalProfile = async () => {
-    console.log(payload);
 
     // Limpa erros antigos
     setValidationErrors({});
@@ -203,7 +202,6 @@ export default function MyResumePage() {
     const fetchProfile = async () => {
       const result = await getProfessionalProfile(token || "", user?.id || "");
       if (result) {
-        console.log(result);
         setIdProfessionalProfile(result.id);
         // Currículo
         setTextValueCurriculum(result.curriculo);
