@@ -29,12 +29,14 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { getProfessionalProfile } from "../../services/getProfessionalProfile";
+import CustomButtom from "../../components/CustomButtom/CustomButtom";
 
 export default function MyResumePage() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const [textValueCurriculum, setTextValueCurriculum] = useState<string>("");
-  const [idProfessionalProfile, setIdProfessionalProfile] = useState<string>("");
+  const [idProfessionalProfile, setIdProfessionalProfile] =
+    useState<string>("");
   const [idAcademic, setidAcademic] = useState<string>("");
   const [degree, setDegree] = useState<string>("");
   const [areaActivity, setAreaActivity] = useState<string>("");
@@ -181,7 +183,7 @@ export default function MyResumePage() {
         const fieldErrors: Record<string, string> = {};
         error.errors.forEach((err) => {
           const path = err.path.join(".");
-          toast.error(err.message)
+          toast.error(err.message);
           fieldErrors[path] = err.message;
         });
 
@@ -202,7 +204,7 @@ export default function MyResumePage() {
       const result = await getProfessionalProfile(token || "", user?.id || "");
       if (result) {
         console.log(result);
-        setIdProfessionalProfile(result.id)
+        setIdProfessionalProfile(result.id);
         // Currículo
         setTextValueCurriculum(result.curriculo);
 
@@ -229,7 +231,7 @@ export default function MyResumePage() {
         // Formação acadêmica
         if (result.formacaoAcademicas.length > 0) {
           const formacao = result.formacaoAcademicas[0];
-          setidAcademic(formacao.id)
+          setidAcademic(formacao.id);
           setDegree(formacao.grau);
           setAreaActivity(formacao.areaAtuacao);
           setDateInitialAreaActivity(
@@ -399,10 +401,28 @@ export default function MyResumePage() {
             />
           </CustomPanel>
 
-          <ButtomBlue
-            text_button="Salvar"
-            onClick={() => handleProfessionalProfile()}
-          />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "1.6rem",
+              justifyContent: "flex-end",
+            }}
+          >
+            <CustomButtom
+              text="Cancelar"
+              color="#929090"
+              onClick={() => {
+                navigate("/overview");
+              }}
+            />
+
+            <CustomButtom
+              text="Salvar"
+              color="#00A8EA"
+              onClick={() => handleProfessionalProfile()}
+            />
+          </div>
         </div>
       </div>
     </>

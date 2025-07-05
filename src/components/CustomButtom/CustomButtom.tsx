@@ -9,13 +9,13 @@ type ButtomType = {
   onClick: () => void;
 };
 
-export default function CustomButtom(child: ButtomType) {
+export default function CustomButtom(child: ButtomType, ...rest) {
   return (
     <div className="buttom-filter">
       <button
         type="button"
         onClick={child.onClick}
-        style={{ backgroundColor: child.color, color: child.text }}
+        style={{ backgroundColor: child.color, color: child.text, border: 'none' }}
       >
         {child.icon}
         {child.text}

@@ -1,4 +1,4 @@
-import "./CreateVacancy.css";
+import "./EditVacancy.css";
 import Header from "../../components/Header/Header";
 import CustomPanel from "../../components/CustomPanel/CustomPanel";
 import CustomInputTextPrime from "../../components/CustomInputTextPrime/CustomInputTextPrime";
@@ -15,42 +15,44 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import CustomInputNumber from "../../components/CustomInputNumber/CustomInputNumber";
-import {
-  CreateVacancyType,
-  defaultCreateVacancy,
-  ValidationCreateVacancy,
-  validationCreateVacancyPayload,
-} from "../../types/CreateVacancyType";
 import { saveVacancyService } from "../../services/saveVacancyService";
 import CustomButtom from "../../components/CustomButtom/CustomButtom";
+import { getVacancyById } from "../../services/getVacancyById";
+import {
+  EditVacancyType,
+  defaultEditVacancy,
+  validationEditVacancyPayload,
+} from "../../types/EditVacancyType";
+import { editVacancyService } from "../../services/editVacancyService";
 
-export default function CreateVacancy() {
+export default function EditVacancy(vacancyId: string) {
+  vacancyId = "f2fad5ad-e4f2-470f-96e2-c964f39bc41b"
   const { token } = useAuth();
   const navigate = useNavigate();
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
   >({});
 
-  const [createVacancyPayload, setCreateVacancyPayload] =
-    useState<CreateVacancyType>({
-      ...defaultCreateVacancy,
+  const [editVacancyPayload, setEditVacancyPayload] =
+    useState<EditVacancyType>({
+      ...defaultEditVacancy,
     });
 
   const handleCreateVacancyChange = (
-    field: keyof CreateVacancyType,
+    field: keyof EditVacancyType,
     value: string | number | null
   ) => {
-    setCreateVacancyPayload((prev) => ({
+    setEditVacancyPayload((prev) => ({
       ...prev,
       [field]: value,
     }));
   };
 
   const handleEnderecoChange = (
-    field: keyof CreateVacancyType["endereco"],
+    field: keyof EditVacancyType["endereco"],
     value: string
   ) => {
-    setCreateVacancyPayload((prev) => ({
+    setEditVacancyPayload((prev) => ({
       ...prev,
       endereco: {
         ...prev.endereco,
@@ -60,6 +62,11 @@ export default function CreateVacancy() {
   };
 
   const { endereco, fetchAddress, setEndereco } = useViaCep();
+
+  const openVacancyOptions = [
+    { label: "Aberta", value: 1 },
+    { label: "Fechada", value: 0 },
+  ];
 
   const workingDayOptions = [
     { label: "6x1", value: "6x1" },
@@ -80,34 +87,30 @@ export default function CreateVacancy() {
     { label: "Estágio", value: "Estágio" },
   ];
 
-  const handleCreateVacancy = async () => {
-    console.log(createVacancyPayload);
+  const handleEditVacancy = async () => {
+    console.log(editVacancyPayload);
 
-    // Limpa erros antigos
     setValidationErrors({});
 
     try {
-      // Valida
-      validationCreateVacancyPayload.parse(createVacancyPayload);
+      validationEditVacancyPayload.parse(editVacancyPayload);
+      console.log(editVacancyPayload, token, vacancyId)
+      const res = await editVacancyService(editVacancyPayload, token || "", vacancyId);
 
-      // Se chegou aqui, payload é válido, pode enviar
-      const res = await saveVacancyService(createVacancyPayload, token);
-
-      toast.success("Vaga criada com sucesso!");
+      toast.success("Vaga editada com sucesso!");
       navigate("/overview");
     } catch (error) {
-      // Se for erro de validação Zod
       if (error instanceof z.ZodError) {
-        // Mapeia erros em objeto { caminho: mensagem }
         const fieldErrors: Record<string, string> = {};
         error.errors.forEach((err) => {
           const path = err.path.join(".");
+          toast.error(err.message)
           fieldErrors[path] = err.message;
         });
 
         setValidationErrors(fieldErrors);
 
-        toast.error("Verifique os campos obrigatórios.");
+        // toast.error("Verifique os campos obrigatórios.");
         console.error("Erros de validação:", error);
         return;
       }
@@ -117,26 +120,27 @@ export default function CreateVacancy() {
     }
   };
 
-  // useEffect(() => {
-  //   if (user) {
-  //     setCreateVacancyPayload((prev) => ({
-  //       ...prev,
-  //       userPessoal: {
-  //         ...prev.userPessoal,
-  //         nome: toCapitalize(user.nome) || "",
-  //         email: user.email || "",
-  //       },
-  //     }));
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    const fetchVacancy = async () => {
+      const result = await getVacancyById(
+        token || "",
+        vacancyId
+      ); 
+      if (result) {
+        setEditVacancyPayload(result);
+      }
+    };
+
+    fetchVacancy();
+  }, []);
 
   return (
     <>
       <Header />
       <div className="my-resume">
         <div className="info-my-resume">
-          <h1>Criar Vaga</h1>
-          <p>Insira as informações necessárias para a criação da vaga</p>
+          <h1>Editar Vaga</h1>
+          <p>Insira as informações necessárias para editar a vaga</p>
         </div>
 
         <div className="main-my-resume">
@@ -154,8 +158,8 @@ export default function CreateVacancy() {
                   id="titulo"
                   label="Título"
                   value={
-                    createVacancyPayload.titulo != null
-                      ? createVacancyPayload.titulo
+                    editVacancyPayload.titulo != null
+                      ? editVacancyPayload.titulo
                       : "Titulo"
                   }
                   onChange={(e) =>
@@ -171,8 +175,8 @@ export default function CreateVacancy() {
                   label="Cargo"
                   type="text"
                   value={
-                    createVacancyPayload.cargo != null
-                      ? createVacancyPayload.cargo
+                    editVacancyPayload.cargo != null
+                      ? editVacancyPayload.cargo
                       : "Cargo"
                   }
                   onChange={(e) =>
@@ -193,7 +197,7 @@ export default function CreateVacancy() {
               >
                 <CustomTextArea
                   label="Descrição"
-                  value={createVacancyPayload.descricao}
+                  value={editVacancyPayload.descricao}
                   onChange={(e) =>
                     handleCreateVacancyChange("descricao", e.target.value)
                   }
@@ -212,7 +216,7 @@ export default function CreateVacancy() {
               >
                 <CustomTextArea
                   label="Responsabilidade e Atribuições"
-                  value={createVacancyPayload.atividades}
+                  value={editVacancyPayload.atividades}
                   onChange={(e) =>
                     handleCreateVacancyChange("atividades", e.target.value)
                   }
@@ -231,7 +235,7 @@ export default function CreateVacancy() {
               >
                 <CustomTextArea
                   label="Diferenciais"
-                  value={createVacancyPayload.diferenciais}
+                  value={editVacancyPayload.diferenciais}
                   onChange={(e) =>
                     handleCreateVacancyChange("diferenciais", e.target.value)
                   }
@@ -248,7 +252,7 @@ export default function CreateVacancy() {
               >
                 <CustomTextArea
                   label="Benefícios"
-                  value={createVacancyPayload.beneficios}
+                  value={editVacancyPayload.beneficios}
                   onChange={(e) =>
                     handleCreateVacancyChange("beneficios", e.target.value)
                   }
@@ -266,7 +270,7 @@ export default function CreateVacancy() {
                 <CustomDropdown
                   id={"regime"}
                   label="Regime de Trabalho"
-                  value={createVacancyPayload.regimeTrabalho}
+                  value={editVacancyPayload.regimeTrabalho}
                   options={workRegimeOptions}
                   placeholder="Selecione"
                   error="Regime de Trabalho é obrigatório"
@@ -279,7 +283,7 @@ export default function CreateVacancy() {
                 <CustomDropdown
                   id={"jornada"}
                   label="Jornada de Trabalho"
-                  value={createVacancyPayload.horarioTrabalho}
+                  value={editVacancyPayload.horarioTrabalho}
                   options={workingDayOptions}
                   placeholder="Selecione"
                   onChange={(e) =>
@@ -298,7 +302,7 @@ export default function CreateVacancy() {
                 <CustomDropdown
                   id={"tipo"}
                   label="Tipo de Contratação"
-                  value={createVacancyPayload.tipoContratacao}
+                  value={editVacancyPayload.tipoContratacao}
                   options={typeOfHiringOptions}
                   placeholder="Selecione"
                   error="Tipo de Contratação é obrigatório"
@@ -311,7 +315,7 @@ export default function CreateVacancy() {
                 <CustomInputNumber
                   id="salario"
                   label="Salário"
-                  value={createVacancyPayload.salario}
+                  value={editVacancyPayload.salario}
                   onChange={(e) =>
                     handleCreateVacancyChange("salario", e.value)
                   }
@@ -334,16 +338,16 @@ export default function CreateVacancy() {
                 <CustomInputMask
                   id="cep"
                   label="CEP"
-                  value={createVacancyPayload.endereco.cep}
+                  value={editVacancyPayload.endereco.cep}
                   setValue={(value) => handleEnderecoChange("cep", value)}
                   type="text"
                   onBlur={async () => {
                     const result = await fetchAddress(
-                      createVacancyPayload.endereco.cep
+                      editVacancyPayload.endereco.cep
                     );
 
                     if (result) {
-                      setCreateVacancyPayload((prev) => ({
+                      setEditVacancyPayload((prev) => ({
                         ...prev,
                         endereco: {
                           ...prev.endereco,
@@ -366,8 +370,8 @@ export default function CreateVacancy() {
                   id="endereco"
                   label="Rua"
                   value={
-                    createVacancyPayload.endereco.rua != null
-                      ? createVacancyPayload.endereco.rua
+                    editVacancyPayload.endereco.rua != null
+                      ? editVacancyPayload.endereco.rua
                       : endereco.rua
                   }
                   onChange={(e) => handleEnderecoChange("rua", e.target.value)}
@@ -384,8 +388,8 @@ export default function CreateVacancy() {
                   id="bairro"
                   label="Bairro"
                   value={
-                    createVacancyPayload.endereco.bairro != null
-                      ? createVacancyPayload.endereco.bairro
+                    editVacancyPayload.endereco.bairro != null
+                      ? editVacancyPayload.endereco.bairro
                       : endereco.bairro
                   }
                   onChange={(e) =>
@@ -399,7 +403,7 @@ export default function CreateVacancy() {
                 <CustomInputTextPrime
                   id="numero"
                   label="Número"
-                  value={createVacancyPayload.endereco.numero}
+                  value={editVacancyPayload.endereco.numero}
                   onChange={(e) =>
                     handleEnderecoChange("numero", e.target.value)
                   }
@@ -414,8 +418,8 @@ export default function CreateVacancy() {
                   id="cidade"
                   label="Cidade"
                   value={
-                    createVacancyPayload.endereco.cidade != null
-                      ? createVacancyPayload.endereco.cidade
+                    editVacancyPayload.endereco.cidade != null
+                      ? editVacancyPayload.endereco.cidade
                       : endereco.cidade
                   }
                   onChange={(e) =>
@@ -430,8 +434,8 @@ export default function CreateVacancy() {
                   id="estado"
                   label="Estado"
                   value={
-                    createVacancyPayload.endereco.uf != null
-                      ? createVacancyPayload.endereco.uf
+                    editVacancyPayload.endereco.uf != null
+                      ? editVacancyPayload.endereco.uf
                       : endereco.estado
                   }
                   onChange={(e) => handleEnderecoChange("uf", e.target.value)}
@@ -443,12 +447,35 @@ export default function CreateVacancy() {
             </div>
             <br />
           </CustomPanel>
-          <div style={{ display: "flex", flexDirection: "row", gap: "1.6rem", justifyContent: "flex-end" }}>
+
+          <CustomPanel header="Status da vaga" toggleable>
+            <CustomDropdown
+              id={"status"}
+              label="Status da vaga"
+              value={editVacancyPayload.status}
+              options={openVacancyOptions}
+              placeholder="Selecione"
+              error="Tipo de Contratação é obrigatório"
+              required={true}
+              onChange={(e) =>
+                handleCreateVacancyChange("status", e.value)
+              }
+            />
+          </CustomPanel>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "1.6rem",
+              justifyContent: "flex-end",
+            }}
+          >
             <CustomButtom
               text="Cancelar"
               color="#929090"
               onClick={() => {
-                navigate('/overview');
+                navigate("/overview");
               }}
             />
 
@@ -456,7 +483,7 @@ export default function CreateVacancy() {
               text="Salvar"
               color="#00A8EA"
               onClick={() => {
-                handleCreateVacancy();
+                handleEditVacancy();
               }}
             />
           </div>

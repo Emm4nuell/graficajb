@@ -3,7 +3,7 @@ import ButtomBlue from "../../components/ButtomBlue/ButtomBlue";
 import CustomInputText from "../../components/CustomInputText/CustomInputText";
 import "./SignIn.css";
 import { defaultSignIn, SignInType } from "../../types/SignInType";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { signInService } from "../../services/signInService";
 import { useAuth } from "../../contexts/AuthContext";
 import { toast } from "react-toastify";
@@ -21,18 +21,18 @@ export default function SignInPage() {
       const res = await signInService(signIn);
       login(res.token);
       toast.success("Login realizado com sucesso!");
-      navigate("/overview");
+      navigate("/overview", { replace: true });
     } catch (error) {
       toast.error("Usuário ou senha inválidos");
       console.error("Erro no login:", error);
     }
   };
 
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/overview");
-    }
-  }, [isAuthenticated, navigate]);
+  // useEffect(() => {
+  //   if (isAuthenticated) {
+  //     navigate("/overview");
+  //   }
+  // }, [isAuthenticated, navigate]);
 
   return (
     <div id="body-signin">
