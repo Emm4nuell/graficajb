@@ -1,4 +1,4 @@
-div.info-my-applications {
+div.info-my-applications, div.applications {
     padding: 2rem 5.56rem 0rem;
 }
 
@@ -42,4 +42,65 @@ p.p-panel{
     line-height: 1.625rem; 
     margin-top: -1rem;
     margin-bottom: 1rem;
+}
+
+.div-application {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  margin-top: 20px;
+}
+
+
+.filter {
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 1px 2px 4px 0px rgba(44, 44, 44, 0.28);
+  width: 262px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 10px;
+}
+
+.list-applications {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* define 2 colunas iguais */
+  gap: 20px;
+  width: 100%;
+}
+
+.card-absolute {
+  background-color: #f9f9f98f;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+.filter #title {
+  color: #2c2c2c;
+  font-family: Poppins;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 26px; /* 144.444% */
+  margin-bottom: 10px;
+}
+
+span {
+  color: var(--span-color);
+}
+
+@media screen and (max-width: 1200px) {
+  .list-opportunities {
+    display: grid;
+    grid-template-columns: 1fr; /* 1 coluna que ocupa toda largura */
+  }
 }

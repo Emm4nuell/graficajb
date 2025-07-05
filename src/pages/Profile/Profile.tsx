@@ -21,6 +21,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { getProfile } from "../../services/getProfile";
+import CustomButtom from "../../components/CustomButtom/CustomButtom";
 
 export default function Profile() {
   const { user, token, login } = useAuth();
@@ -455,7 +456,28 @@ export default function Profile() {
             />
           </CustomPanel>
 
-          <ButtomBlue text_button="Salvar" onClick={() => handleProfile()} />
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "1.6rem",
+              justifyContent: "flex-end",
+            }}
+          >
+            <CustomButtom
+              text="Cancelar"
+              color="#929090"
+              onClick={() => {
+                navigate("/overview");
+              }}
+            />
+
+            <CustomButtom
+              text="Salvar"
+              color="#00A8EA"
+              onClick={() => handleProfile()}
+            />
+          </div>
         </div>
       </div>
     </>

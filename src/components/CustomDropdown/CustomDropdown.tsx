@@ -18,7 +18,7 @@ export default function CustomDropdown({
   const isInvalid =
     rest.required &&
     touched &&
-    (rest.value === null || rest.value === undefined || rest.value === 0);
+    (rest.value === null || rest.value === undefined);
 
   return (
     <div className="custom-dropdown-container">

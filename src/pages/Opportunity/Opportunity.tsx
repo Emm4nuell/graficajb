@@ -31,8 +31,8 @@ export default function OpportunityPage() {
   const fetchOpportunities = async () => {
     try {
       const data = await opportunityService(
-        // localStorage.getItem("token"),
-        token,
+        localStorage.getItem("token"),
+        // token,
         filter
       );
 
