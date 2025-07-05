@@ -62,7 +62,7 @@ p.info-desc-detail-vacancies {
 }
 
 .info-detail-vacancies-card {
-  width: 500px;
+  width: 30rem;
 }
 
 .info-detail-vacancies-buttom {
@@ -88,6 +88,12 @@ p.info-desc-detail-vacancies {
   line-height: 1.8rem;
   margin-bottom: 1rem;
   padding-bottom: 1rem;
+}
+
+.candidacy-card-details{
+  margin: 1rem 0 2rem;
+
+
 }
 
 @media (max-width: 768px) {

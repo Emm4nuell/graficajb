@@ -25,6 +25,7 @@ import { addLocale } from "primereact/api";
 import CreateVacancy from "./pages/CreateVacancy/CreateVacancy.tsx";
 import DetailVacancies from "./pages/DetailVacancies/DetailVacancies.tsx";
 import EditVacancy from "./pages/EditVacancy/EditVacancy.tsx";
+import CandidaciesPage from "./pages/Candidacies/Candidacies.tsx";
 
 addLocale("pt-BR", {
   firstDayOfWeek: 0,
@@ -87,8 +88,8 @@ const router = createBrowserRouter([
       { path: "myvacancies", element: <MyVacancies /> },
       { path: "createvacancy", element: <CreateVacancy /> },
       { path: "detailvacancies/:id", element: <DetailVacancies /> },
-      { path: "editvacancy", element: <EditVacancy /> },
-      { path: "detailvacancies", element: <DetailVacancies /> },
+      { path: "editvacancy/:id", element: <EditVacancy /> },
+      { path: "candidacies/:id", element: <CandidaciesPage /> },
     ],
   },
 ]);

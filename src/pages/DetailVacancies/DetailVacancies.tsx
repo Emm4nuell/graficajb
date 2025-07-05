@@ -14,6 +14,8 @@ import CustomButtom from "../../components/CustomButtom/CustomButtom";
 import { useAuth } from "../../contexts/AuthContext";
 import EditVacancy from "../EditVacancy/EditVacancy";
 import { useNavigate } from "react-router-dom";
+import CandidacyCard from "../../components/CandidacyCard/CandidacyCard";
+import { getCandidaciesByVacancy } from "../../services/getCandidaciesByVacancy";
 
 export default function DetailVacancies() {
   const { user, token, perfilCandidato, isAuthenticated } = useAuth();
@@ -25,6 +27,7 @@ export default function DetailVacancies() {
   ]);
   const [opportunitie, setOpportunitie] =
     useState<OpportunitieType>(defaultOpportunitie);
+  const [candidacies, setCandidacies] = useState(0);
 
   const fetchDetailVacancie = async () => {
     try {
@@ -52,9 +55,15 @@ export default function DetailVacancies() {
     }
   };
 
+  const fetchCandidacies = async () => {
+    const data = await getCandidaciesByVacancy(token || "", id || "");
+    setCandidacies(data.length);
+  };
+
   useEffect(() => {
     fetchDetailVacancie();
     fetchOpportunities();
+    fetchCandidacies();
   }, [id]);
 
   return (
@@ -181,11 +190,15 @@ export default function DetailVacancies() {
                 />
               </div>
             ) : (
-              <div className="info-detail-vacancies-buttom">
+              <div className="candidacy-card-details">
+                <CandidacyCard total={candidacies} />
+
                 <CustomButtom
                   color="#DF2A8C"
                   text="Editar Vaga"
-                  onClick={() => {}}
+                  onClick={() => {
+                    navigate(`/editvacancy/${id}`);
+                  }}
                 />
               </div>
             )

@@ -12,7 +12,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import CustomInputMask from "../../components/CustomInputMask/CustomInputMask";
 import { toCapitalize } from "../../utils/toCapitalize";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { z } from "zod";
 import CustomInputNumber from "../../components/CustomInputNumber/CustomInputNumber";
 import { saveVacancyService } from "../../services/saveVacancyService";
@@ -25,9 +25,9 @@ import {
 } from "../../types/EditVacancyType";
 import { editVacancyService } from "../../services/editVacancyService";
 
-export default function EditVacancy(vacancyId: string) {
-  vacancyId = "f2fad5ad-e4f2-470f-96e2-c964f39bc41b"
+export default function EditVacancy() {
   const { token } = useAuth();
+  const { id } = useParams()
   const navigate = useNavigate();
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
@@ -94,8 +94,8 @@ export default function EditVacancy(vacancyId: string) {
 
     try {
       validationEditVacancyPayload.parse(editVacancyPayload);
-      console.log(editVacancyPayload, token, vacancyId)
-      const res = await editVacancyService(editVacancyPayload, token || "", vacancyId);
+      console.log(editVacancyPayload, token, id)
+      const res = await editVacancyService(editVacancyPayload, token || "", id || "");
 
       toast.success("Vaga editada com sucesso!");
       navigate("/overview");
@@ -124,7 +124,7 @@ export default function EditVacancy(vacancyId: string) {
     const fetchVacancy = async () => {
       const result = await getVacancyById(
         token || "",
-        vacancyId
+        id || ""
       ); 
       if (result) {
         setEditVacancyPayload(result);

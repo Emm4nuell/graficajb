@@ -1,0 +1,35 @@
+
+.candidacy-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff9fc;
+  border: 2px solid #DF2A8C;
+  border-radius: 8px;
+  padding: 1rem;
+  width: 100%;
+}
+
+.candidacy-card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.candidacy-card-title {
+  font-weight: 600;
+  color: #333;
+}
+
+.candidacy-card-link {
+  color: #DF2A8C;
+  text-decoration: underline;
+  font-size: 0.7rem;
+  margin-top: 0.2rem;
+}
+
+.candidacy-card-count {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
