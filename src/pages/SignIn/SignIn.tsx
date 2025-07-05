@@ -28,12 +28,6 @@ export default function SignInPage() {
     }
   };
 
-  // useEffect(() => {
-  //   if (isAuthenticated) {
-  //     navigate("/overview");
-  //   }
-  // }, [isAuthenticated, navigate]);
-
   return (
     <div id="body-signin">
       <section id="section-signin">
@@ -78,6 +72,17 @@ export default function SignInPage() {
             ></ButtomBlue>
           </form>
         </div>
+        <img
+          src="logo-jb.svg"
+          alt="Logo Gráfica JB"
+          style={{
+            position: "absolute",
+            bottom: "2rem",
+            right: "2rem",
+            width: "100px",
+            opacity: 0.9,
+          }}
+        />
       </section>
     </div>
   );

@@ -56,3 +56,18 @@ section#section-register {
 #info-register p a:hover {
   text-decoration: underline;
 }
+
+
+@media screen and (max-width: 768px) {
+  .box-register{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+  }
+
+  .logo-jb{
+    display: none;
+  }
+}

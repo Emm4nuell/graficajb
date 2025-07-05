@@ -54,6 +54,13 @@ export default function Header() {
             </nav>
           ) : (
             <nav className="header-nav">
+              <NavLink
+                to="/opportunity"
+                className={({ isActive }) => (isActive ? "active" : "")}
+              >
+                Oportunidades
+              </NavLink>
+
               <Link to={"/signin"}>
                 <ButtomCard text_button={"Entrar"} />
               </Link>

@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Header from "../../components/Header/Header";
 import "./DetailVacancies.css";
@@ -11,8 +11,13 @@ import CardOpportunity from "../../components/card/cardOpportunity/CardOpportuni
 import { opportunityService } from "../../services/opportunityService";
 import { CustomFilter, defaultCustomerFilter } from "../../types/FilterType";
 import CustomButtom from "../../components/CustomButtom/CustomButtom";
+import { useAuth } from "../../contexts/AuthContext";
+import EditVacancy from "../EditVacancy/EditVacancy";
+import { useNavigate } from "react-router-dom";
 
 export default function DetailVacancies() {
+  const { user, token, perfilCandidato, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
   const { id } = useParams();
   const [filter, setFilter] = useState<CustomFilter>(defaultCustomerFilter);
   const [opportunities, setOpportunities] = useState<OpportunitieType[]>([
@@ -63,7 +68,7 @@ export default function DetailVacancies() {
             <h1>{opportunitie.titulo}</h1>
           </div>
           <div className="info-detail-vacancies">
-            <div className="list-info">
+            <div className="list-info-details">
               <div className="topic-card">
                 <div
                   style={{
@@ -124,7 +129,7 @@ export default function DetailVacancies() {
               <strong>Tipo de contratação:</strong>{" "}
               {opportunitie.tipoContratacao}
               <br />
-              <strong>Horário de trabalho:</strong>{" "}
+              <strong>Jornada de trabalho:</strong>{" "}
               {opportunitie.horarioTrabalho}
             </p>
           </div>
@@ -161,18 +166,39 @@ export default function DetailVacancies() {
         </div>
 
         <div className="info-detail-vacancies-card">
-          <div className="info-detail-vacancies-buttom">
-            <CustomButtom
-              color="#DF2A8C"
-              text="Candidatar-se"
-              onClick={() => {}}
-            />
-            <CustomButtom
-              color="#616161"
-              text="Compartilhar"
-              onClick={() => {}}
-            />
-          </div>
+          {isAuthenticated ? (
+            perfilCandidato ? (
+              <div className="info-detail-vacancies-buttom">
+                <CustomButtom
+                  color="#DF2A8C"
+                  text="Candidatar-se"
+                  onClick={() => {}}
+                />
+                <CustomButtom
+                  color="#616161"
+                  text="Compartilhar"
+                  onClick={() => {}}
+                />
+              </div>
+            ) : (
+              <div className="info-detail-vacancies-buttom">
+                <CustomButtom
+                  color="#DF2A8C"
+                  text="Editar Vaga"
+                  onClick={() => {}}
+                />
+              </div>
+            )
+          ) : (
+            <div className="info-detail-register-not-auth">
+              <span>
+                Para se candidatar é necessário ter uma conta.{" "}
+                <Link to={"/register"}>Cadastre-se</Link>
+              </span>
+              <br />{" "}
+            </div>
+          )}
+
           <h1 className="info-title-detail-vacancies">Outras oportunidades</h1>
           <div className="info-detail-vacancies-card-list">
             {opportunities.map((value, index) => (
